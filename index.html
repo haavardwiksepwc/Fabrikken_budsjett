@@ -3,330 +3,333 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fabrikken ved Fjorden – Budsjettsporing</title>
+<title>Fabrikken ved Fjorden</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&family=DM+Serif+Display&display=swap');
-  :root{--bg:#f5f1ec;--surface:#ffffff;--surface2:#f9f7f4;--border:#e2ddd5;--border-light:#ece8e1;--text:#2c2825;--text-muted:#8a8077;--accent:#3d6b5e;--accent-light:#e8f0ed;--accent-hover:#2f5349;--fjord:#5a8fa8;--fjord-light:#e6f0f5;--warm:#c4956a;--warm-light:#f8f0e8;--green:#4a9e6e;--green-bg:rgba(74,158,110,0.08);--yellow:#c49a3c;--yellow-bg:rgba(196,154,60,0.08);--red:#c0564f;--red-bg:rgba(192,86,79,0.08);--radius:14px;--shadow:0 1px 3px rgba(0,0,0,0.04),0 4px 12px rgba(0,0,0,0.03);--shadow-lg:0 4px 24px rgba(0,0,0,0.06);}
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;}
-  .hero{position:relative;width:100%;height:240px;overflow:hidden;background:linear-gradient(135deg,#3d6b5e 0%,#5a8fa8 50%,#c4956a 100%);display:flex;align-items:flex-end;justify-content:center;}
-  .hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(44,40,37,0.1) 0%,rgba(44,40,37,0.55) 100%);}
-  .hero-mountains{position:absolute;bottom:0;left:0;right:0;height:120px;}
-  .hero-content{position:relative;z-index:2;text-align:center;padding:0 20px 28px;}
-  .hero-content h1{font-family:'DM Serif Display',serif;font-size:2.2em;color:#fff;margin-bottom:2px;text-shadow:0 2px 12px rgba(0,0,0,0.2);}
-  .hero-content p{color:rgba(255,255,255,0.85);font-size:0.95em;}
-  .sync-status{display:inline-block;padding:4px 12px;border-radius:20px;font-size:0.75em;font-weight:600;margin-top:6px;}
-  .sync-ok{background:rgba(74,158,110,0.3);color:#a8f0c8;}
-  .sync-err{background:rgba(192,86,79,0.3);color:#f8b4b0;}
-  .sync-loading{background:rgba(255,255,255,0.2);color:#fff;}
-  .container{max-width:1200px;margin:0 auto;padding:0 20px 40px;margin-top:-36px;position:relative;z-index:3;}
-  .page-tabs{display:flex;gap:0;justify-content:center;margin-bottom:24px;background:var(--surface);border-radius:12px;border:1.5px solid var(--border);overflow:hidden;box-shadow:var(--shadow);max-width:500px;margin-left:auto;margin-right:auto;}
-  .page-tab{flex:1;padding:12px 20px;border:none;background:transparent;color:var(--text-muted);cursor:pointer;font-size:0.9em;font-weight:600;font-family:inherit;transition:all 0.2s;text-align:center;}
-  .page-tab:not(:last-child){border-right:1.5px solid var(--border);}
-  .page-tab:hover{color:var(--accent);background:var(--accent-light);}
-  .page-tab.active{background:var(--accent);color:#fff;}
-  .page{display:none;}.page.active{display:block;}
-  .year-selector{display:flex;gap:8px;justify-content:center;margin-bottom:24px;flex-wrap:wrap;}
-  .year-btn{padding:10px 24px;border:2px solid var(--border);background:var(--surface);color:var(--text-muted);border-radius:10px;cursor:pointer;font-size:0.9em;font-weight:600;transition:all 0.2s;box-shadow:var(--shadow);}
-  .year-btn:hover{border-color:var(--accent);color:var(--accent);}
-  .year-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
-  .summary-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:24px;}
-  .card{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);}
-  .card:hover{box-shadow:var(--shadow-lg);}
-  .card-icon{font-size:1.4em;margin-bottom:6px;}
-  .card-label{font-size:0.72em;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;font-weight:600;}
-  .card-value{font-size:1.6em;font-weight:700;}
-  .card-sub{font-size:0.78em;color:var(--text-muted);margin-top:3px;}
-  .section{margin-bottom:28px;}
-  .section-title{font-family:'DM Serif Display',serif;font-size:1.2em;margin-bottom:12px;}
-  .cat-header td{font-weight:700!important;color:var(--accent)!important;font-size:0.82em!important;padding-top:14px!important;background:var(--accent-light)!important;border-bottom:1px solid var(--border)!important;text-transform:uppercase;letter-spacing:0.5px;}
-  .budget-table{width:100%;border-collapse:separate;border-spacing:0;background:var(--surface);border-radius:var(--radius);border:1px solid var(--border-light);overflow:hidden;box-shadow:var(--shadow);}
-  .budget-table th{text-align:left;padding:12px 14px;font-size:0.68em;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);background:var(--surface2);border-bottom:1px solid var(--border);font-weight:600;}
-  .budget-table td{padding:10px 14px;border-bottom:1px solid var(--border-light);font-size:0.88em;}
-  .budget-table tr:last-child td{border-bottom:none;}
-  .budget-table tr:hover td{background:var(--accent-light);}
-  .post-name{font-weight:500;min-width:140px;}
-  .remaining{font-weight:600;font-variant-numeric:tabular-nums;}
-  .progress-bar{width:100%;height:5px;background:var(--border-light);border-radius:3px;overflow:hidden;margin-top:4px;}
-  .progress-fill{height:100%;border-radius:3px;transition:width 0.4s ease;}
-  .tilbud-list{list-style:none;padding:0;}
-  .tilbud-item{display:flex;align-items:center;gap:8px;padding:7px 0;font-size:0.83em;color:var(--text-muted);border-bottom:1px dashed var(--border-light);flex-wrap:wrap;}
-  .tilbud-item:last-child{border-bottom:none;}
-  .tilbud-item .leverandor{font-weight:600;color:var(--text);min-width:90px;}
-  .tilbud-item .pris{color:var(--accent);font-weight:700;min-width:90px;}
-  .add-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:flex-end;}
-  .add-row input,.add-row select{padding:9px 12px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);font-size:0.85em;font-family:inherit;}
-  .add-row input:focus,.add-row select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light);}
-  .btn{padding:9px 16px;border:none;border-radius:10px;cursor:pointer;font-size:0.85em;font-weight:600;transition:all 0.2s;font-family:inherit;}
-  .btn-primary{background:var(--accent);color:#fff;}.btn-primary:hover{background:var(--accent-hover);}
-  .btn-small{padding:4px 10px;font-size:0.76em;border-radius:7px;}
-  .btn-danger{background:var(--red);color:#fff;}
-  .btn-success{background:var(--green);color:#fff;}
-  .btn-ghost{background:var(--surface);border:1.5px solid var(--border);color:var(--text-muted);}
-  .btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
-  .btn-edit{background:var(--warm);color:#fff;}
-  .btn-save{background:var(--green);color:#fff;font-size:0.9em;padding:10px 24px;}
-  .expand-btn{background:none;border:none;color:var(--accent);cursor:pointer;font-size:0.85em;padding:2px 6px;transition:transform 0.2s;}
-  .expand-btn.open{transform:rotate(90deg);}
-  .detail-row td{background:var(--surface2)!important;padding:12px 14px 14px 28px!important;}
-  .hidden{display:none;}
-  .totals-row td{font-weight:700!important;background:var(--surface2)!important;border-top:2px solid var(--border)!important;}
-  .sub-group-header td{font-weight:700!important;color:var(--accent)!important;font-size:0.86em!important;padding-top:14px!important;background:var(--accent-light)!important;}
-  .sub-item .post-name{font-weight:400;color:var(--text-muted);}
-  .editable-budget{width:120px;padding:6px 10px;border:1.5px solid var(--warm);border-radius:8px;background:var(--warm-light);color:var(--text);font-size:0.88em;font-family:inherit;font-weight:600;text-align:right;}
-  .editable-budget:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light);}
-  .budget-display{font-weight:600;}
-  .budget-hint{font-size:0.68em;color:var(--text-muted);display:block;margin-top:2px;}.budget-hint a{color:var(--fjord);}
-  .group-total-note{font-size:0.76em;color:var(--text-muted);margin-top:2px;}.group-total-note strong{color:var(--text);}
-  .export-bar{display:flex;gap:8px;justify-content:flex-end;margin-bottom:14px;flex-wrap:wrap;}
-  .badge{display:inline-block;padding:3px 9px;border-radius:6px;font-size:0.7em;font-weight:700;}
-  .badge-green{background:var(--green-bg);color:var(--green);}.badge-yellow{background:var(--yellow-bg);color:var(--yellow);}.badge-red{background:var(--red-bg);color:var(--red);}
-  .running-tag{display:inline-block;padding:2px 8px;border-radius:5px;font-size:0.72em;font-weight:600;background:var(--warm-light);color:var(--warm);margin-right:4px;margin-bottom:2px;}
-  .actual-tag{display:inline-block;padding:2px 8px;border-radius:5px;font-size:0.72em;font-weight:600;background:var(--fjord-light);color:var(--fjord);margin-right:4px;margin-bottom:2px;}
-  .info-box{background:var(--fjord-light);border:1px solid #c5dce8;border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:0.85em;color:var(--fjord);line-height:1.5;}.info-box strong{color:var(--text);}
-  .edit-bar{display:flex;gap:10px;align-items:center;margin-bottom:16px;padding:14px 18px;background:var(--warm-light);border:1.5px solid var(--warm);border-radius:12px;}
-  .edit-bar .edit-label{font-size:0.88em;font-weight:600;color:var(--warm);flex:1;}
-  .opp-original{font-size:0.7em;color:var(--text-muted);}
-  .edit-indicator{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--warm);margin-right:6px;animation:pulse 1.5s infinite;}
-  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
-  @media(max-width:768px){.budget-table{display:block;overflow-x:auto;}.add-row{flex-direction:column;}.add-row input,.add-row select{width:100%;}.hero-content h1{font-size:1.5em;}.hero{height:190px;}.card-value{font-size:1.3em;}.edit-bar{flex-direction:column;}}
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&family=DM+Serif+Display&display=swap');
+:root{--bg:#f5f1ec;--surface:#fff;--surface2:#f9f7f4;--border:#e2ddd5;--border-light:#ece8e1;--text:#2c2825;--text-muted:#8a8077;--accent:#3d6b5e;--accent-light:#e8f0ed;--accent-hover:#2f5349;--fjord:#5a8fa8;--fjord-light:#e6f0f5;--warm:#c4956a;--warm-light:#f8f0e8;--green:#4a9e6e;--green-bg:rgba(74,158,110,.08);--yellow:#c49a3c;--yellow-bg:rgba(196,154,60,.08);--red:#c0564f;--red-bg:rgba(192,86,79,.08);--radius:14px;--shadow:0 1px 3px rgba(0,0,0,.04),0 4px 12px rgba(0,0,0,.03);--shadow-lg:0 4px 24px rgba(0,0,0,.06);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;-webkit-user-select:none;user-select:none;}
+.hero{position:relative;width:100%;height:200px;overflow:hidden;background:linear-gradient(135deg,#3d6b5e,#5a8fa8 50%,#c4956a);display:flex;align-items:flex-end;justify-content:center;}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(44,40,37,.1),rgba(44,40,37,.55));}
+.hero-mountains{position:absolute;bottom:0;left:0;right:0;height:100px;}
+.hero-content{position:relative;z-index:2;text-align:center;padding:0 20px 22px;}
+.hero-content h1{font-family:'DM Serif Display',serif;font-size:2em;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.2);}
+.hero-content p{color:rgba(255,255,255,.85);font-size:.88em;}
+.sync-status{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.7em;font-weight:600;margin-top:3px;}
+.sync-ok{background:rgba(74,158,110,.3);color:#a8f0c8;}.sync-err{background:rgba(192,86,79,.3);color:#f8b4b0;}.sync-loading{background:rgba(255,255,255,.2);color:#fff;}
+.container{max-width:1250px;margin:0 auto;padding:0 20px 40px;margin-top:-28px;position:relative;z-index:3;}
+.page-tabs{display:flex;gap:0;justify-content:center;margin-bottom:18px;background:var(--surface);border-radius:12px;border:1.5px solid var(--border);overflow:hidden;box-shadow:var(--shadow);max-width:650px;margin-left:auto;margin-right:auto;}
+.page-tab{flex:1;padding:10px 14px;border:none;background:transparent;color:var(--text-muted);cursor:pointer;font-size:.84em;font-weight:600;font-family:inherit;transition:all .2s;text-align:center;}
+.page-tab:not(:last-child){border-right:1.5px solid var(--border);}
+.page-tab:hover{color:var(--accent);background:var(--accent-light);}
+.page-tab.active{background:var(--accent);color:#fff;}
+.page{display:none;}.page.active{display:block;}
+.year-selector{display:flex;gap:8px;justify-content:center;margin-bottom:18px;flex-wrap:wrap;}
+.year-btn{padding:8px 20px;border:2px solid var(--border);background:var(--surface);color:var(--text-muted);border-radius:10px;cursor:pointer;font-size:.86em;font-weight:600;box-shadow:var(--shadow);}
+.year-btn:hover{border-color:var(--accent);color:var(--accent);}.year-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.summary-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:11px;margin-bottom:18px;}
+.card{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);}
+.card-icon{font-size:1.2em;margin-bottom:4px;}.card-label{font-size:.68em;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:2px;font-weight:600;}.card-value{font-size:1.4em;font-weight:700;}.card-sub{font-size:.74em;color:var(--text-muted);margin-top:2px;}
+.section{margin-bottom:22px;}.section-title{font-family:'DM Serif Display',serif;font-size:1.1em;margin-bottom:9px;}
+.cat-header td{font-weight:700!important;color:var(--accent)!important;font-size:.78em!important;padding-top:11px!important;background:var(--accent-light)!important;border-bottom:1px solid var(--border)!important;text-transform:uppercase;letter-spacing:.5px;}
+.budget-table{width:100%;border-collapse:separate;border-spacing:0;background:var(--surface);border-radius:var(--radius);border:1px solid var(--border-light);overflow:hidden;box-shadow:var(--shadow);}
+.budget-table th{text-align:left;padding:9px 11px;font-size:.64em;text-transform:uppercase;letter-spacing:.7px;color:var(--text-muted);background:var(--surface2);border-bottom:1px solid var(--border);font-weight:600;}
+.budget-table td{padding:8px 11px;border-bottom:1px solid var(--border-light);font-size:.83em;}
+.budget-table tr:last-child td{border-bottom:none;}.budget-table tr:hover td{background:var(--accent-light);}
+.post-name{font-weight:500;}.remaining{font-weight:600;}
+.progress-bar{width:100%;height:4px;background:var(--border-light);border-radius:3px;overflow:hidden;margin-top:3px;}.progress-fill{height:100%;border-radius:3px;}
+.tilbud-list{list-style:none;}.tilbud-item{display:flex;align-items:center;gap:7px;padding:5px 0;font-size:.8em;color:var(--text-muted);border-bottom:1px dashed var(--border-light);flex-wrap:wrap;}.tilbud-item:last-child{border-bottom:none;}.tilbud-item .leverandor{font-weight:600;color:var(--text);min-width:80px;}.tilbud-item .pris{color:var(--accent);font-weight:700;min-width:80px;}
+.add-row{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:flex-end;}
+.add-row input,.add-row select{padding:8px 10px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-size:.82em;font-family:inherit;}
+.add-row input:focus,.add-row select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light);}
+.btn{padding:8px 13px;border:none;border-radius:9px;cursor:pointer;font-size:.82em;font-weight:600;font-family:inherit;}
+.btn-primary{background:var(--accent);color:#fff;}.btn-small{padding:3px 8px;font-size:.72em;border-radius:6px;}
+.btn-danger{background:var(--red);color:#fff;}.btn-success{background:var(--green);color:#fff;}
+.btn-ghost{background:var(--surface);border:1.5px solid var(--border);color:var(--text-muted);}
+.btn-edit{background:var(--warm);color:#fff;}.btn-save{background:var(--green);color:#fff;padding:8px 20px;}
+.expand-btn{background:none;border:none;color:var(--accent);cursor:pointer;font-size:.82em;padding:2px 4px;}.expand-btn.open{transform:rotate(90deg);}
+.detail-row td{background:var(--surface2)!important;padding:9px 11px 11px 24px!important;}
+.hidden{display:none;}
+.totals-row td{font-weight:700!important;background:var(--surface2)!important;border-top:2px solid var(--border)!important;}
+.sub-group-header td{font-weight:700!important;color:var(--accent)!important;font-size:.82em!important;padding-top:11px!important;background:var(--accent-light)!important;}
+.sub-item .post-name{font-weight:400;color:var(--text-muted);}
+.editable-budget{width:110px;padding:5px 8px;border:1.5px solid var(--warm);border-radius:7px;background:var(--warm-light);color:var(--text);font-size:.84em;font-family:inherit;font-weight:600;text-align:right;}
+.editable-budget:focus{outline:none;border-color:var(--accent);}
+.budget-display{font-weight:600;}.budget-hint{font-size:.64em;color:var(--text-muted);display:block;margin-top:1px;}
+.group-total-note{font-size:.72em;color:var(--text-muted);}.group-total-note strong{color:var(--text);}
+.edit-bar{display:flex;gap:9px;align-items:center;margin-bottom:12px;padding:11px 14px;background:var(--warm-light);border:1.5px solid var(--warm);border-radius:11px;}
+.edit-bar .edit-label{font-size:.84em;font-weight:600;color:var(--warm);flex:1;}
+.opp-original{font-size:.66em;color:var(--text-muted);}
+.edit-indicator{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--warm);margin-right:5px;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.badge{display:inline-block;padding:2px 7px;border-radius:5px;font-size:.66em;font-weight:700;}
+.badge-green{background:var(--green-bg);color:var(--green);}.badge-yellow{background:var(--yellow-bg);color:var(--yellow);}.badge-red{background:var(--red-bg);color:var(--red);}
+.running-tag,.actual-tag{display:inline-block;padding:2px 6px;border-radius:5px;font-size:.68em;font-weight:600;margin-right:2px;}
+.running-tag{background:var(--warm-light);color:var(--warm);}.actual-tag{background:var(--fjord-light);color:var(--fjord);}
+.info-box{background:var(--fjord-light);border:1px solid #c5dce8;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:.8em;color:var(--fjord);}.info-box strong{color:var(--text);}
+/* GANTT */
+.gantt-wrap{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border-light);box-shadow:var(--shadow);overflow-x:auto;margin-bottom:18px;}
+.gantt-month-row{display:flex;background:var(--surface2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:5;}
+.gantt-month-cell{text-align:center;font-size:.72em;font-weight:700;color:var(--accent);padding:5px 0;border-right:1px solid var(--border-light);}
+.gantt-header{display:flex;border-bottom:1px solid var(--border);position:sticky;top:28px;z-index:4;background:var(--surface2);}
+.gantt-label-col{min-width:170px;max-width:170px;padding:6px 10px;font-size:.66em;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;border-right:1px solid var(--border-light);}
+.gantt-weeks{display:flex;flex:1;}
+.gantt-week{flex:1;min-width:42px;text-align:center;padding:5px 1px;font-size:.6em;color:var(--text-muted);font-weight:600;border-right:1px solid var(--border-light);}
+.gantt-row{display:flex;border-bottom:1px solid var(--border-light);min-height:42px;align-items:center;}
+.gantt-row:hover{background:rgba(61,107,94,.04);}
+.gantt-row-label{min-width:170px;max-width:170px;padding:5px 10px;font-size:.76em;font-weight:500;border-right:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;}
+.gantt-row-cells{display:flex;flex:1;position:relative;height:42px;}
+.gantt-cell{flex:1;min-width:42px;border-right:1px solid var(--border-light);height:100%;}
+.gantt-bar{position:absolute;top:9px;height:22px;border-radius:5px;font-size:.6em;color:#fff;font-weight:600;display:flex;align-items:center;padding:0 5px;cursor:grab;white-space:nowrap;overflow:hidden;z-index:2;box-shadow:0 1px 3px rgba(0,0,0,.15);}
+.gantt-bar:active{cursor:grabbing;opacity:.8;}
+.gantt-bar .drag-handle-l,.gantt-bar .drag-handle-r{position:absolute;top:0;width:8px;height:100%;cursor:ew-resize;z-index:3;}
+.gantt-bar .drag-handle-l{left:0;border-radius:5px 0 0 5px;}.gantt-bar .drag-handle-r{right:0;border-radius:0 5px 5px 0;}
+.gantt-bar .drag-handle-l:hover,.gantt-bar .drag-handle-r:hover{background:rgba(255,255,255,.3);}
+.gantt-diamond{position:absolute;top:12px;width:16px;height:16px;transform:rotate(45deg);border-radius:2px;z-index:2;box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:grab;}
+.gantt-diamond:active{cursor:grabbing;opacity:.8;}
+.gantt-diamond-label{position:absolute;top:30px;font-size:.56em;color:var(--text-muted);white-space:nowrap;transform:translateX(-50%);left:50%;z-index:1;pointer-events:none;font-weight:500;}
+.bar-red{background:#d4645c;}.bar-green{background:var(--accent);}.bar-warm{background:var(--warm);}.bar-fjord{background:var(--fjord);}.bar-gray{background:#b5b0a8;}
+.diamond-red{background:#d4645c;}.diamond-dark{background:#666;}.diamond-accent{background:var(--accent);}
+.del-row-btn{background:none;border:none;color:var(--red);cursor:pointer;font-size:.72em;opacity:.4;padding:2px;}.del-row-btn:hover{opacity:1;}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(2px);}
+.modal{background:var(--surface);border-radius:16px;padding:24px;width:360px;max-width:90vw;box-shadow:var(--shadow-lg);}
+.modal h3{font-family:'DM Serif Display',serif;font-size:1.1em;margin-bottom:12px;}
+.modal label{font-size:.78em;font-weight:600;color:var(--text-muted);display:block;margin-bottom:3px;margin-top:10px;}
+.modal input,.modal select{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.85em;color:var(--text);background:var(--surface);}
+.modal input:focus,.modal select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light);}
+.modal-btns{display:flex;gap:8px;margin-top:16px;}
+.modal-btns .btn{flex:1;padding:10px;text-align:center;}
+/* TODOS */
+.todo-list{display:flex;flex-direction:column;gap:7px;}
+.todo-item{background:var(--surface);border:1px solid var(--border-light);border-radius:11px;padding:12px 14px;box-shadow:var(--shadow);}
+.todo-item.done{opacity:.5;}.todo-item.done .todo-title{text-decoration:line-through;}
+.todo-top{display:flex;align-items:flex-start;gap:9px;}
+.todo-check{width:20px;height:20px;border:2px solid var(--border);border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:.75em;}
+.todo-check.checked{background:var(--accent);border-color:var(--accent);color:#fff;}
+.todo-body{flex:1;min-width:0;}.todo-title{font-weight:600;font-size:.86em;}.todo-desc{font-size:.78em;color:var(--text-muted);margin-bottom:4px;}
+.todo-meta{display:flex;gap:6px;flex-wrap:wrap;}.todo-tag{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:5px;font-size:.66em;font-weight:600;}
+.tag-person{background:var(--fjord-light);color:var(--fjord);}.tag-category{background:var(--accent-light);color:var(--accent);}.tag-due{background:var(--warm-light);color:var(--warm);}.tag-priority-high{background:var(--red-bg);color:var(--red);}.tag-priority-med{background:var(--yellow-bg);color:var(--yellow);}
+.todo-filters{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap;}
+.filter-btn{padding:5px 12px;border:1.5px solid var(--border);border-radius:7px;background:var(--surface);color:var(--text-muted);font-size:.76em;font-weight:600;cursor:pointer;font-family:inherit;}
+.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.add-todo-form{background:var(--surface);border:1.5px solid var(--border);border-radius:11px;padding:14px;margin-top:12px;box-shadow:var(--shadow);}
+.add-todo-form input,.add-todo-form select,.add-todo-form textarea{padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;background:var(--surface);color:var(--text);font-size:.82em;font-family:inherit;width:100%;margin-bottom:7px;}
+.add-todo-form textarea{height:50px;resize:vertical;}
+.add-todo-form input:focus,.add-todo-form select:focus,.add-todo-form textarea:focus{outline:none;border-color:var(--accent);}
+.form-row{display:flex;gap:7px;}.form-row>*{flex:1;}
+.gantt-hint{font-size:.75em;color:var(--text-muted);margin-bottom:8px;}
+@media(max-width:768px){.budget-table{display:block;overflow-x:auto;}.add-row,.form-row{flex-direction:column;}.add-row input,.add-row select{width:100%;}.hero-content h1{font-size:1.3em;}.hero{height:170px;}.gantt-label-col,.gantt-row-label{min-width:110px;max-width:110px;}.modal{width:95vw;}}
 </style>
 </head>
 <body>
-<div class="hero">
-  <div class="hero-overlay"></div>
-  <svg class="hero-mountains" viewBox="0 0 1440 120" preserveAspectRatio="none" fill="none">
-    <rect y="80" width="1440" height="40" fill="#5a8fa8" opacity="0.3"/>
-    <path d="M0 120 L0 70 L120 30 L240 55 L360 15 L480 50 L560 25 L680 60 L780 10 L900 45 L1020 20 L1100 55 L1200 30 L1320 50 L1440 35 L1440 120Z" fill="#3d6b5e" opacity="0.5"/>
-    <path d="M0 120 L0 85 L180 55 L300 75 L440 40 L580 70 L700 45 L840 72 L960 50 L1100 68 L1250 42 L1380 65 L1440 55 L1440 120Z" fill="#3d6b5e" opacity="0.35"/>
-    <path d="M0 120 L0 95 L200 80 L400 90 L600 78 L800 88 L1000 75 L1200 85 L1440 80 L1440 120Z" fill="#4a7d6d" opacity="0.25"/>
-    <rect x="620" y="58" width="80" height="42" fill="#2c2825" opacity="0.2" rx="2"/><rect x="710" y="48" width="60" height="52" fill="#2c2825" opacity="0.2" rx="2"/>
-    <rect x="650" y="42" width="8" height="16" fill="#2c2825" opacity="0.15"/><rect x="740" y="35" width="6" height="13" fill="#2c2825" opacity="0.15"/>
-    <path d="M0 100 Q360 88 720 95 Q1080 102 1440 92 L1440 120 L0 120Z" fill="var(--bg)"/>
-  </svg>
-  <div class="hero-content">
-    <h1>Fabrikken ved Fjorden</h1>
-    <p>Budsjettsporing · Ro til å være kreativ, fart til å skape</p>
-    <div id="syncStatus" class="sync-status sync-loading">⏳ Kobler til...</div>
-  </div>
-</div>
+<div class="hero"><div class="hero-overlay"></div><svg class="hero-mountains" viewBox="0 0 1440 100" preserveAspectRatio="none" fill="none"><path d="M0 100 L0 60 L120 25 L240 45 L360 10 L480 40 L560 20 L680 50 L780 8 L900 38 L1020 15 L1100 45 L1200 25 L1320 42 L1440 28 L1440 100Z" fill="#3d6b5e" opacity=".45"/><path d="M0 80 Q360 68 720 75 Q1080 82 1440 72 L1440 100 L0 100Z" fill="var(--bg)"/></svg><div class="hero-content"><h1>Fabrikken ved Fjorden</h1><p>Budsjett & Prosjektstyring</p><div id="syncStatus" class="sync-status sync-loading">⏳ Laster...</div></div></div>
 <div class="container">
-  <div class="page-tabs">
-    <button class="page-tab active" onclick="showPage('invest')">🏗️ Investeringer</button>
-    <button class="page-tab" onclick="showPage('drift')">💰 Driftskostnader</button>
-  </div>
-  <div class="page active" id="page-invest">
-    <div class="summary-cards" id="investSummary"></div>
-    <div id="editBar" class="hidden"></div>
-    <div class="section"><div class="section-title">Investeringsbudsjett 2026</div>
-      <table class="budget-table"><thead><tr><th style="width:28px"></th><th>Post</th><th>Budsjett</th><th>Valgte tilbud</th><th>Gjenstående</th><th>Status</th></tr></thead><tbody id="investBody"></tbody></table>
-    </div>
-    <div class="section"><div class="section-title">Legg til tilbud — investering</div>
-      <div class="add-row">
-        <select id="investSelect"></select>
-        <input type="text" id="investLeverandorInput" placeholder="Leverandør"/>
-        <input type="text" id="investPrisInput" placeholder="Pris (NOK)"/>
-        <input type="text" id="investNotatInput" placeholder="Notat"/>
-        <button class="btn btn-primary" onclick="addTilbud()">+ Legg til</button>
-      </div>
-    </div>
-  </div>
-  <div class="page" id="page-drift">
-    <div class="year-selector" id="yearSelector"></div>
-    <div class="summary-cards" id="driftSummary"></div>
-    <div class="info-box" id="driftInfo"></div>
-    <div class="section"><div class="section-title">Driftskostnader</div>
-      <table class="budget-table"><thead><tr><th style="width:28px"></th><th>Post</th><th>Budsjett</th><th>Løpende kostnad</th><th>Gjenstående</th><th>Status</th></tr></thead><tbody id="budgetBody"></tbody></table>
-    </div>
-    <div class="section"><div class="section-title">Registrer løpende kostnad</div>
-      <div class="add-row">
-        <select id="postSelect"></select>
-        <select id="monthSelect"></select>
-        <input type="text" id="faktiskInput" placeholder="Mnd. beløp (NOK)"/>
-        <input type="text" id="faktiskNotatInput" placeholder="Notat / leverandør"/>
-        <button class="btn btn-primary" onclick="addFaktisk()">+ Registrer</button>
-      </div>
+  <div class="page-tabs"><button class="page-tab active" onclick="showPage('invest')">🏗️ Investeringer</button><button class="page-tab" onclick="showPage('drift')">💰 Drift</button><button class="page-tab" onclick="showPage('prosjekt')">📋 Prosjekt</button></div>
+  <div class="page active" id="page-invest"><div class="summary-cards" id="investSummary"></div><div id="editBar" class="hidden"></div><div class="section"><div class="section-title">Investeringsbudsjett 2026</div><table class="budget-table"><thead><tr><th style="width:24px"></th><th>Post</th><th>Budsjett</th><th>Tilbud</th><th>Gjenstående</th><th>Status</th></tr></thead><tbody id="investBody"></tbody></table></div><div class="section"><div class="section-title">Legg til tilbud</div><div class="add-row"><select id="investSelect"></select><input type="text" id="iLev" placeholder="Leverandør"/><input type="text" id="iPris" placeholder="Pris"/><input type="text" id="iNot" placeholder="Notat"/><button class="btn btn-primary" onclick="addTilbud()">+</button></div></div></div>
+  <div class="page" id="page-drift"><div class="year-selector" id="yearSel"></div><div class="summary-cards" id="driftSummary"></div><div class="info-box" id="driftInfo"></div><div class="section"><div class="section-title">Driftskostnader</div><table class="budget-table"><thead><tr><th style="width:24px"></th><th>Post</th><th>Budsjett</th><th>Løpende</th><th>Gjenstående</th><th>Status</th></tr></thead><tbody id="budgetBody"></tbody></table></div><div class="section"><div class="section-title">Registrer løpende</div><div class="add-row"><select id="postSelect"></select><select id="monthSelect"></select><input type="text" id="faktiskInput" placeholder="Mnd beløp"/><input type="text" id="faktiskNot" placeholder="Notat"/><button class="btn btn-primary" onclick="addFaktisk()">+</button></div></div></div>
+  <div class="page" id="page-prosjekt">
+    <div class="section"><div class="section-title">📅 Prosjektplan</div><div class="gantt-hint">💡 <strong>Dra</strong> for å flytte · <strong>Dra kanter</strong> for å endre lengde · <strong>Dobbeltklikk</strong> på en rad for å legge til ny milepæl/prosess</div><div class="gantt-wrap"><div id="ganttChart"></div></div></div>
+    <div class="section"><div class="section-title">✅ Oppgaver</div><div class="todo-filters" id="todoFilters"></div><div class="todo-list" id="todoList"></div>
+      <div class="add-todo-form"><div style="font-weight:600;font-size:.85em;margin-bottom:6px;">Ny oppgave</div><input type="text" id="todoTitle" placeholder="Tittel *"/><textarea id="todoDesc" placeholder="Beskrivelse"></textarea><div class="form-row"><select id="todoAssignee"><option value="">Hvem?</option><option>Håvard</option><option>Partner</option><option>Arkitekt</option><option>Entreprenør</option><option>Regnskapsfører</option><option>Alle</option></select><select id="todoCat"><option value="">Kategori</option><option>Bygg</option><option>Admin</option><option>Produksjon</option><option>Partnerskap</option><option>Ansettelse</option><option>Møte</option><option>Diverse</option></select><select id="todoPri"><option value="">Prioritet</option><option value="high">🔴 Høy</option><option value="med">🟡 Medium</option><option value="low">🟢 Lav</option></select></div><div class="form-row"><input type="date" id="todoDue"/><button class="btn btn-primary" onclick="addTodo()" style="flex:none">+ Oppgave</button></div></div>
     </div>
   </div>
 </div>
-
+<div id="modalRoot"></div>
 <script>
-// ===== SUPABASE CONNECTION =====
-const SUPABASE_URL='https://khvehsncuqkndvzkqwmh.supabase.co';
-const SUPABASE_KEY='sb_publishable_uem7AxV2hp7ohu-y3rwBJA_YseASyrd';
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const SB_URL='https://khvehsncuqkndvzkqwmh.supabase.co',SB_KEY='sb_publishable_uem7AxV2hp7ohu-y3rwBJA_YseASyrd';
+const sb=window.supabase.createClient(SB_URL,SB_KEY);
+let syncOk=false;function setSS(s,m){const e=document.getElementById('syncStatus');e.className='sync-status sync-'+s;e.textContent=m;}
+let tilbudStore={},runningCosts=[],oppBudgets={},todos=[],timeline=[],currentYear=2026,editMode=false,editDraft={},todoFilter='all';
 
-let syncOk=false;
-function setSyncStatus(s,msg){const el=document.getElementById('syncStatus');el.className='sync-status sync-'+s;el.textContent=msg;}
+const defaultTimeline=[  {id:'t1',row:'Arkitekt',type:'bar',s:10,e:12.5,text:'Tilbud',cls:'bar-red'},  {id:'t2',row:'Arkitekt',type:'bar',s:12.5,e:15,text:'Kontrakt/planlegging',cls:'bar-warm'},  {id:'t3',row:'Bygging',type:'bar',s:14,e:15.5,text:'Tilbud',cls:'bar-red'},  {id:'t4',row:'Bygging',type:'bar',s:15.5,e:17,text:'Bestillingstid?',cls:'bar-warm'},  {id:'t5',row:'Bygging',type:'bar',s:17,e:30,text:'Bygging??',cls:'bar-red'},  {id:'t6',row:'Dugnad/dokumentere?',type:'diamond',w:15.5,text:'Byggestart',cls:'diamond-red'},  {id:'t7',row:'Dugnad/dokumentere?',type:'diamond',w:18,text:'Maledugnad?',cls:'diamond-red'},  {id:'t8',row:'Dugnad/dokumentere?',type:'diamond',w:22,text:'Planløsning ferdig',cls:'diamond-red'},  {id:'t9',row:'Dugnad/dokumentere?',type:'diamond',w:27,text:'Flyttedugnad?',cls:'diamond-red'},  {id:'t10',row:'Dugnad/dokumentere?',type:'diamond',w:30,text:'Innflyttingsfest',cls:'diamond-red'},  {id:'t11',row:'Milepæler/frister',type:'diamond',w:11,text:'Bestemme arkitekt',cls:'diamond-dark'},  {id:'t12',row:'Milepæler/frister',type:'diamond',w:15,text:'Bestemme Entreprenør',cls:'diamond-dark'},  {id:'t13',row:'Milepæler/frister',type:'diamond',w:30,text:'Innflytting',cls:'diamond-dark'},  {id:'t14',row:'Møter',type:'diamond',w:10,text:'Løpende ukentlig status',cls:'diamond-dark'},  {id:'t15',row:'Møter',type:'diamond',w:11.5,text:'Møter med arkitekt',cls:'diamond-dark'},  {id:'t16',row:'Møter',type:'diamond',w:15,text:'Løpende møter med entreprenør',cls:'diamond-dark'},  {id:'t17',row:'Møter',type:'bar',s:10,e:13,text:'',cls:'bar-green'},  {id:'t18',row:'Møter',type:'bar',s:15,e:30,text:'',cls:'bar-green'},  {id:'t19',row:'Nye strikkemaskiner',type:'bar',s:20,e:23,text:'Leie av produksjonskapasitet?',cls:'bar-fjord'},  {id:'t20',row:'Nye strikkemaskiner',type:'bar',s:23,e:26,text:'Produktsalg volum?',cls:'bar-warm'},  {id:'t21',row:'Nye strikkemaskiner',type:'bar',s:26,e:31,text:'',cls:'bar-gray'},  {id:'t22',row:'Partnerskap/søknader/Eventutleie',type:'diamond',w:22,text:'Første partnerskap',cls:'diamond-dark'},  {id:'t23',row:'Partnerskap/søknader/Eventutleie',type:'diamond',w:30,text:'Andre partnerskap',cls:'diamond-dark'},  {id:'t24',row:'Ansettelser og admin',type:'diamond',w:13,text:'Stiftelse opprettet',cls:'diamond-dark'},  {id:'t25',row:'Ansettelser og admin',type:'diamond',w:14,text:'ERP-system opprettet',cls:'diamond-dark'},  {id:'t26',row:'Ansettelser og admin',type:'diamond',w:15,text:'Velge regnskapsfører',cls:'diamond-dark'},  {id:'t27',row:'Ansettelser og admin',type:'diamond',w:17.5,text:'Community manager',cls:'diamond-dark'},  {id:'t28',row:'Ansettelser og admin',type:'diamond',w:22,text:'Produktutvikler?',cls:'diamond-accent'},  {id:'t29',row:'Ansettelser og admin',type:'diamond',w:25,text:'Admin?',cls:'diamond-accent'},];
 
-// ===== LOAD / SAVE =====
-async function loadFromSupabase(){
-  try{
-    const{data,error}=await sb.from('budsjett_data').select('*').eq('id','shared').single();
-    if(error) throw error;
-    if(data){
-      tilbudStore=data.tilbud||{};
-      runningCosts=data.running_costs||[];
-      oppBudgets=data.opp_budgets||{};
-    }
-    syncOk=true;setSyncStatus('ok','✅ Koblet til — data synkes live');
-  }catch(e){
-    console.warn('Supabase load feilet, bruker lokal data:',e);
-    tilbudStore=JSON.parse(localStorage.getItem('fvf_tB')||'{}');
-    runningCosts=JSON.parse(localStorage.getItem('fvf_rcB')||'[]');
-    oppBudgets=JSON.parse(localStorage.getItem('fvf_obB')||'{}');
-    setSyncStatus('err','⚠️ Offline — bruker lokale data');
-  }
-  render();
+async function loadData(){
+  try{const{data,error}=await sb.from('budsjett_data').select('*').eq('id','shared').single();if(error)throw error;if(data){tilbudStore=data.tilbud||{};runningCosts=data.running_costs||[];oppBudgets=data.opp_budgets||{};}syncOk=true;}catch(e){tilbudStore=JSON.parse(localStorage.getItem('fvf_tE')||'{}');runningCosts=JSON.parse(localStorage.getItem('fvf_rcE')||'[]');oppBudgets=JSON.parse(localStorage.getItem('fvf_obE')||'{}');}
+  try{const{data,error}=await sb.from('prosjekt_data').select('*').eq('id','shared').single();if(!error&&data){todos=data.todos||[];timeline=(data.timeline&&data.timeline.length)?data.timeline:JSON.parse(JSON.stringify(defaultTimeline));}else timeline=JSON.parse(JSON.stringify(defaultTimeline));}catch(e){todos=JSON.parse(localStorage.getItem('fvf_todE')||'[]');timeline=JSON.parse(localStorage.getItem('fvf_tlE')||'null')||JSON.parse(JSON.stringify(defaultTimeline));}
+  setSS(syncOk?'ok':'err',syncOk?'✅ Live':'⚠️ Offline');renderAll();
+}
+let sBT=null,sPT=null;
+function saveBudget(){localStorage.setItem('fvf_tE',JSON.stringify(tilbudStore));localStorage.setItem('fvf_rcE',JSON.stringify(runningCosts));localStorage.setItem('fvf_obE',JSON.stringify(oppBudgets));if(sBT)clearTimeout(sBT);sBT=setTimeout(async()=>{try{await sb.from('budsjett_data').update({tilbud:tilbudStore,running_costs:runningCosts,opp_budgets:oppBudgets,updated_at:new Date().toISOString()}).eq('id','shared');}catch(e){}},800);}
+function saveProj(){localStorage.setItem('fvf_todE',JSON.stringify(todos));localStorage.setItem('fvf_tlE',JSON.stringify(timeline));if(sPT)clearTimeout(sPT);sPT=setTimeout(async()=>{try{await sb.from('prosjekt_data').update({todos,timeline,updated_at:new Date().toISOString()}).eq('id','shared');}catch(e){}},800);}
+sb.channel('ch2').on('postgres_changes',{event:'UPDATE',schema:'public',table:'budsjett_data',filter:'id=eq.shared'},(p)=>{const d=p.new;if(d){tilbudStore=d.tilbud||{};runningCosts=d.running_costs||[];oppBudgets=d.opp_budgets||{};renderAll();}}).on('postgres_changes',{event:'UPDATE',schema:'public',table:'prosjekt_data',filter:'id=eq.shared'},(p)=>{const d=p.new;if(d){todos=d.todos||[];if(d.timeline&&d.timeline.length)timeline=d.timeline;renderAll();}}).subscribe();
+
+const MO=['Jan','Feb','Mar','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Des'],YRS=[2026,2027,2028,2029,2030],OPP_O=5000000;
+const D_OPP=[{id:'opp_arkitekt',name:'Arkitekt',db:400000},{id:'opp_entreprenor',name:'Entreprenør',db:500000},{id:'opp_tomrer',name:'Tømrer',db:800000},{id:'opp_elektro',name:'Elektriker',db:650000},{id:'opp_bad_vvs',name:'Bad/VVS',db:500000},{id:'opp_kjokken',name:'Kjøkken',db:350000},{id:'opp_maler',name:'Maler',db:250000},{id:'opp_innredning',name:'Innredning',db:600000},{id:'opp_tekn',name:'Teknisk kontor',db:400000},{id:'opp_tilgang',name:'Tilgang',db:250000},{id:'opp_diverse',name:'Diverse',db:300000}];
+function gOB(id){return oppBudgets[id]!==undefined?oppBudgets[id]:(D_OPP.find(d=>d.id===id)||{}).db||0;}
+function gOT(){return D_OPP.reduce((s,d)=>s+gOB(d.id),0);}function gOI(){return D_OPP.map(d=>({...d,budget:gOB(d.id)}));}
+const INV_F=[{id:'maskiner',name:'Strikkemaskiner/symaskiner',budget:1210000},{id:'stiftelse',name:'Opprettelse stiftelse',budget:300000}];
+function gIT(){return INV_F.reduce((s,i)=>s+i.budget,0)+gOT();}
+const dD={2026:{c:[{n:'👥 Ansatte',i:[{id:'lonn_dl',n:'Daglig leder',b:1300000},{id:'lonn_pu',n:'Produktutvikler',b:1040000},{id:'lonn_cm',n:'Community mgr',b:845000}]},{n:'🏢 Fasiliteter',i:[{id:'leie',n:'Leie lokale',b:1100000},{id:'drift',n:'Drift/vedlikehold',b:200000}]},{n:'⚙️ Produksjon',i:[{id:'leasing',n:'Leasing maskiner',b:751536},{id:'garn',n:'Garn/materiell',b:300000},{id:'pilot',n:'Pilotproduksjon',b:400000}]},{n:'📣 Komm.',i:[{id:'komm',n:'Kommunikasjon',b:550000}]},{n:'🤝 Samarbeid',i:[{id:'samarb',n:'Samarbeid/utd.',b:450000},{id:'ekstern',n:'Ekstern hjelp',b:950000}]}],r:3275680},2027:{c:[{n:'👥',i:[{id:'lonn_dl',n:'Daglig leder',b:1339000},{id:'lonn_pu',n:'Produktutvikler',b:1071200},{id:'lonn_cm',n:'Community mgr',b:870350}]},{n:'🏢',i:[{id:'leie',n:'Leie',b:1166000},{id:'drift',n:'Drift',b:270000}]},{n:'⚙️',i:[{id:'leasing',n:'Leasing',b:841720},{id:'garn',n:'Garn',b:400000},{id:'pilot',n:'Pilot',b:500000}]},{n:'📣',i:[{id:'komm',n:'Komm.',b:650000}]},{n:'🤝',i:[{id:'samarb',n:'Samarb.',b:550000},{id:'ekstern',n:'Ekstern',b:730769}]}],r:5036610},2028:{c:[{n:'👥',i:[{id:'lonn_dl',n:'Daglig leder',b:1379170},{id:'lonn_pu',n:'Produktutvikler',b:1103336},{id:'lonn_cm',n:'Community mgr',b:896461}]},{n:'🏢',i:[{id:'leie',n:'Leie',b:1235960},{id:'drift',n:'Drift',b:340000}]},{n:'⚙️',i:[{id:'leasing',n:'Leasing',b:942727},{id:'garn',n:'Garn',b:500000},{id:'pilot',n:'Pilot',b:600000}]},{n:'📣',i:[{id:'komm',n:'Komm.',b:750000}]},{n:'🤝',i:[{id:'samarb',n:'Samarb.',b:650000},{id:'ekstern',n:'Ekstern',b:456731}]}],r:6426215},2029:{c:[{n:'👥',i:[{id:'lonn_dl',n:'DL',b:1420545},{id:'lonn_pu',n:'PU',b:1136436},{id:'lonn_cm',n:'CM',b:923354}]},{n:'🏢',i:[{id:'leie',n:'Leie',b:1310118},{id:'drift',n:'Drift',b:410000}]},{n:'⚙️',i:[{id:'leasing',n:'Leasing',b:1055854},{id:'garn',n:'Garn',b:600000},{id:'pilot',n:'Pilot',b:700000}]},{n:'📣',i:[{id:'komm',n:'Komm.',b:850000}]},{n:'🤝',i:[{id:'samarb',n:'Samarb.',b:750000},{id:'ekstern',n:'Ekstern',b:326236}]}],r:7965008},2030:{c:[{n:'👥',i:[{id:'lonn_dl',n:'DL',b:1463161},{id:'lonn_pu',n:'PU',b:1170529},{id:'lonn_cm',n:'CM',b:951055}]},{n:'🏢',i:[{id:'leie',n:'Leie',b:1388725},{id:'drift',n:'Drift',b:460000}]},{n:'⚙️',i:[{id:'leasing',n:'Leasing',b:1182556},{id:'garn',n:'Garn',b:650000},{id:'pilot',n:'Pilot',b:750000}]},{n:'📣',i:[{id:'komm',n:'Komm.',b:900000}]},{n:'🤝',i:[{id:'samarb',n:'Samarb.',b:800000},{id:'ekstern',n:'Ekstern',b:217491}]}],r:8550315}};
+
+function fmt(n){return Math.round(n).toLocaleString('nb-NO');}function pN(s){return parseFloat(String(s).replace(/\s/g,'').replace(/,/g,'.'))||0;}
+function gK(y,id){return y+'_'+id;}function gVS(y,id){return(tilbudStore[gK(y,id)]||[]).reduce((s,t)=>s+(t.valgt?t.pris:0),0);}
+function gRY(pid,yr){let t=0;runningCosts.filter(rc=>rc.id===pid).forEach(rc=>{if(yr<rc.startYear)return;t+=rc.mndBelop*(yr===rc.startYear?(12-rc.startMonth):12);});return t;}
+function sH(p){return p>100?'<span class="badge badge-red">Over</span>':p>80?'<span class="badge badge-yellow">~</span>':'<span class="badge badge-green">OK</span>';}
+function bC(p){return p>100?'var(--red)':p>80?'var(--yellow)':'var(--green)';}function vC(v){return v>=0?'var(--green)':'var(--red)';}
+function showPage(p){document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));document.querySelectorAll('.page-tab').forEach(e=>e.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');document.querySelectorAll('.page-tab').forEach(e=>{if((p==='invest'&&e.textContent.includes('Invest'))||(p==='drift'&&e.textContent.includes('Drift'))||(p==='prosjekt'&&e.textContent.includes('Prosjekt')))e.classList.add('active');});renderAll();}
+function startEdit(){editMode=true;editDraft={};D_OPP.forEach(d=>{editDraft[d.id]=gOB(d.id);});renderAll();}
+function cancelEdit(){editMode=false;editDraft={};renderAll();}
+function saveEdit(){Object.keys(editDraft).forEach(id=>{oppBudgets[id]=editDraft[id];});editMode=false;editDraft={};saveBudget();renderAll();}
+function gDT(){return D_OPP.reduce((s,d)=>s+(editDraft[d.id]!=null?editDraft[d.id]:gOB(d.id)),0);}function uDr(id,v){editDraft[id]=pN(v);}
+function renderAll(){renderInvest();renderDrift();renderGantt();renderTodos();}
+
+// INVEST
+function renderInvest(){const oT=gOT(),iT=gIT();let iU=0;INV_F.forEach(i=>{iU+=gVS(2026,i.id);});gOI().forEach(i=>{iU+=gVS(2026,i.id);});const iR=iT-iU,iP=iT>0?iU/iT*100:0;
+document.getElementById('investSummary').innerHTML=`<div class="card"><div class="card-icon">🏗️</div><div class="card-label">Budsjett</div><div class="card-value">${fmt(iT)}</div></div><div class="card"><div class="card-icon">📋</div><div class="card-label">Tilbud</div><div class="card-value" style="color:var(--accent)">${fmt(iU)}</div></div><div class="card"><div class="card-icon">✨</div><div class="card-label">Gjenstående</div><div class="card-value" style="color:${vC(iR)}">${fmt(iR)}</div></div>`;
+const eb=document.getElementById('editBar');if(editMode){const dt=gDT(),dd=dt-OPP_O;eb.className='edit-bar';eb.innerHTML=`<div class="edit-label"><span class="edit-indicator"></span>Sum: <strong>${fmt(dt)}</strong>${dd?` <span style="color:${dd>0?'var(--red)':'var(--green)'}">(${dd>0?'+':''}${fmt(dd)})</span>`:''}</div><button class="btn btn-save" onclick="saveEdit()">💾 Lagre</button><button class="btn btn-ghost" onclick="cancelEdit()">Avbryt</button>`;}else eb.className='hidden';
+let h='',g=0;INV_F.forEach(it=>{const b=gVS(2026,it.id),r=it.budget-b,p=it.budget>0?b/it.budget*100:0,k=gK(2026,it.id),d='i_'+g;h+=`<tr><td><button class="expand-btn" id="btn_${d}" onclick="tR('${d}')">▶</button></td><td class="post-name">${it.name}</td><td>${fmt(it.budget)}</td><td style="color:var(--accent)">${fmt(b)}</td><td style="color:${vC(r)}">${fmt(r)}</td><td>${sH(p)}<div class="progress-bar"><div class="progress-fill" style="width:${Math.min(p,100)}%;background:${bC(p)}"></div></div></td></tr><tr id="${d}" class="detail-row hidden"><td colspan="6">${rTL(k)}</td></tr>`;g++;});
+const oi=gOI();let gU=0;oi.forEach(i=>{gU+=gVS(2026,i.id);});const gR=oT-gU,gP=oT>0?gU/oT*100:0;
+h+=`<tr class="sub-group-header"><td></td><td>🔨 Oppussing</td><td><strong>${fmt(oT)}</strong><div class="opp-original">Søknad: ${fmt(OPP_O)}</div></td><td style="color:var(--accent)">${fmt(gU)}</td><td style="color:${vC(gR)}">${fmt(gR)}</td><td>${!editMode?'<button class="btn btn-small btn-edit" onclick="startEdit()">✏️</button>':''}${sH(gP)}</td></tr>`;
+oi.forEach(it=>{const b=gVS(2026,it.id),bV=editMode?(editDraft[it.id]!=null?editDraft[it.id]:it.budget):it.budget,r=bV-b,p=bV>0?b/bV*100:0,k=gK(2026,it.id),d='i_'+g;let bc=editMode?`<input class="editable-budget" type="text" value="${fmt(bV)}" oninput="uDr('${it.id}',this.value)"/>`:`<span class="budget-display">${fmt(bV)}</span>`;h+=`<tr class="sub-item"><td><button class="expand-btn" id="btn_${d}" onclick="tR('${d}')">▶</button></td><td class="post-name" style="padding-left:28px">↳ ${it.name}</td><td>${bc}</td><td style="color:var(--accent)">${fmt(b)}</td><td style="color:${vC(r)}">${fmt(r)}</td><td>${sH(p)}</td></tr><tr id="${d}" class="detail-row hidden"><td colspan="6">${rTL(k)}</td></tr>`;g++;});
+h+=`<tr class="totals-row"><td></td><td><strong>TOTALT</strong></td><td><strong>${fmt(iT)}</strong></td><td style="color:var(--accent)"><strong>${fmt(iU)}</strong></td><td style="color:${vC(iR)}"><strong>${fmt(iR)}</strong></td><td></td></tr>`;
+document.getElementById('investBody').innerHTML=h;const is=document.getElementById('investSelect');is.innerHTML='<option value="">Post...</option>';INV_F.forEach(c=>{is.innerHTML+=`<option value="${c.id}">${c.name}</option>`;});is.innerHTML+='<optgroup label="🔨 Oppussing">';oi.forEach(i=>{is.innerHTML+=`<option value="${i.id}">${i.name}</option>`;});is.innerHTML+='</optgroup>';}
+function rTL(key){const t=tilbudStore[key]||[];if(!t.length)return'<span style="color:var(--text-muted);font-size:.8em">Ingen tilbud.</span>';let h='<ul class="tilbud-list">';t.forEach((x,i)=>{h+=`<li class="tilbud-item"><span class="leverandor">${x.leverandor}</span><span class="pris">${fmt(x.pris)}</span><span style="flex:1;color:var(--text-muted)">${x.notat||''}</span>${x.valgt?'✅':''}<button class="btn btn-small ${x.valgt?'btn-ghost':'btn-success'}" onclick="tV('${key}',${i})">${x.valgt?'−':'+'}</button><button class="btn btn-small btn-danger" onclick="rTi('${key}',${i})">✕</button></li>`;});return h+'</ul>';}
+
+// DRIFT
+function renderDrift(){const c=document.getElementById('yearSel');c.innerHTML='';YRS.forEach(y=>{const b=document.createElement('button');b.className='year-btn'+(y===currentYear?' active':'');b.textContent=y;b.onclick=()=>{currentYear=y;renderAll();};c.appendChild(b);});const ms=document.getElementById('monthSelect');ms.innerHTML='';MO.forEach((m,i)=>{ms.innerHTML+=`<option value="${i}">${m} ${currentYear}</option>`;});
+const dd=dD[currentYear];if(!dd)return;let cB=0,cU=0;dd.c.forEach(cat=>{cat.i.forEach(it=>{cB+=it.b;cU+=gRY(it.id,currentYear);});});const cR=cB-cU,cP=cB>0?cU/cB*100:0;
+document.getElementById('driftInfo').innerHTML='💡 Mnd-beløp løper automatisk ut året og videre.';
+document.getElementById('driftSummary').innerHTML=`<div class="card"><div class="card-icon">💰</div><div class="card-label">Budsjett</div><div class="card-value">${fmt(cB)}</div></div><div class="card"><div class="card-icon">📊</div><div class="card-label">Løpende</div><div class="card-value" style="color:var(--fjord)">${fmt(cU)}</div></div><div class="card"><div class="card-icon">✨</div><div class="card-label">Gjenstående</div><div class="card-value" style="color:${vC(cR)}">${fmt(cR)}</div></div><div class="card"><div class="card-icon">📈</div><div class="card-label">Resultat</div><div class="card-value" style="color:${vC(dd.r-cU)}">${fmt(dd.r-cU)}</div></div>`;
+let ch='',di=0;dd.c.forEach(cat=>{ch+=`<tr class="cat-header"><td colspan="6">${cat.n}</td></tr>`;cat.i.forEach(it=>{const b=gRY(it.id,currentYear),r=it.b-b,p=it.b>0?b/it.b*100:0,d='d_'+di;ch+=`<tr><td><button class="expand-btn" id="btn_${d}" onclick="tR('${d}')">▶</button></td><td class="post-name">${it.n}</td><td>${fmt(it.b)}</td><td style="color:var(--fjord);font-weight:600">${fmt(b)}</td><td style="color:${vC(r)}">${fmt(r)}</td><td>${sH(p)}<div class="progress-bar"><div class="progress-fill" style="width:${Math.min(p,100)}%;background:${bC(p)}"></div></div></td></tr><tr id="${d}" class="detail-row hidden"><td colspan="6">${rRnL(it.id,currentYear)}</td></tr>`;di++;});});
+let tB=0,tU=0;dd.c.forEach(cat=>{cat.i.forEach(it=>{tB+=it.b;tU+=gRY(it.id,currentYear);});});ch+=`<tr class="totals-row"><td></td><td><strong>TOTALT</strong></td><td><strong>${fmt(tB)}</strong></td><td style="color:var(--fjord)"><strong>${fmt(tU)}</strong></td><td style="color:${vC(tB-tU)}"><strong>${fmt(tB-tU)}</strong></td><td></td></tr>`;
+document.getElementById('budgetBody').innerHTML=ch;const sel=document.getElementById('postSelect');sel.innerHTML='<option value="">Post...</option>';dd.c.forEach(cat=>{sel.innerHTML+=`<optgroup label="${cat.n}">`;cat.i.forEach(i=>{sel.innerHTML+=`<option value="${i.id}">${i.n}</option>`;});sel.innerHTML+='</optgroup>';});}
+function rRnL(pid,yr){const en=runningCosts.filter(rc=>rc.id===pid&&rc.startYear<=yr);if(!en.length)return'';let h='<ul class="tilbud-list">';en.forEach(rc=>{const gi=runningCosts.indexOf(rc),mt=(yr===rc.startYear)?(12-rc.startMonth):12;h+=`<li class="tilbud-item"><span class="running-tag">Fra ${MO[rc.startMonth]} ${rc.startYear}</span><span class="pris" style="color:var(--fjord)">${fmt(rc.mndBelop)}/mnd</span><span style="font-weight:600">→${fmt(rc.mndBelop*mt)}</span><span style="flex:1;color:var(--text-muted)">${rc.notat||''}</span><button class="btn btn-small btn-danger" onclick="rRC(${gi})">✕</button></li>`;});return h+'</ul>';}
+
+// GANTT
+const WEEKS=[];for(let w=10;w<=31;w++)WEEKS.push(w);const W_C=WEEKS.length;
+const M_S={10:'Mar',14:'Apr',18:'Mai',22:'Jun',27:'Jul',31:'Aug'};
+function renderGantt(){
+  const rows=[...new Set(timeline.map(t=>t.row))];
+  const mK=Object.keys(M_S).map(Number);const mSp=[];for(let i=0;i<mK.length;i++){const s=mK[i],e=(i<mK.length-1)?mK[i+1]:32;mSp.push({n:M_S[s],sp:e-s});}
+  let h='<div class="gantt-month-row"><div class="gantt-label-col"></div>';mSp.forEach(m=>{h+=`<div class="gantt-month-cell" style="flex:${m.sp}">${m.n}</div>`;});h+='</div>';
+  h+='<div class="gantt-header"><div class="gantt-label-col">Aktivitet</div><div class="gantt-weeks">';WEEKS.forEach(w=>{h+=`<div class="gantt-week">U${w}</div>`;});h+='</div></div>';
+  rows.forEach(row=>{
+    const items=timeline.filter(t=>t.row===row);const rid=row.replace(/[^a-zA-Z0-9æøåÆØÅ]/g,'_');
+    h+=`<div class="gantt-row" data-row="${row}"><div class="gantt-row-label">${row}<button class="del-row-btn" title="Slett rad" onclick="delRow('${row.replace(/'/g,"\\'")}')">✕</button></div><div class="gantt-row-cells" data-rowname="${row}">`;
+    WEEKS.forEach(()=>{h+='<div class="gantt-cell"></div>';});
+    items.forEach(it=>{
+      if(it.type==='bar'){const l=((it.s-10)/W_C)*100,w=((it.e-it.s)/W_C)*100;h+=`<div class="gantt-bar ${it.cls}" style="left:${l}%;width:${w}%;" data-id="${it.id}" title="${it.text}"><div class="drag-handle-l" data-id="${it.id}" data-handle="l"></div>${it.text}<div class="drag-handle-r" data-id="${it.id}" data-handle="r"></div></div>`;}
+      else{const l=((it.w-10+.2)/W_C)*100;h+=`<div class="gantt-diamond ${it.cls}" style="left:calc(${l}% - 8px);" data-id="${it.id}" title="${it.text}"></div><div class="gantt-diamond-label" style="left:${l}%;">${it.text}</div>`;}
+    });
+    h+='</div></div>';
+  });
+  document.getElementById('ganttChart').innerHTML=h;setupDrag();setupDblClick();
 }
 
-let saveTimeout=null;
-function saveData(){
-  localStorage.setItem('fvf_tB',JSON.stringify(tilbudStore));
-  localStorage.setItem('fvf_rcB',JSON.stringify(runningCosts));
-  localStorage.setItem('fvf_obB',JSON.stringify(oppBudgets));
-  if(saveTimeout) clearTimeout(saveTimeout);
-  saveTimeout=setTimeout(async()=>{
-    try{
-      const{error}=await sb.from('budsjett_data').update({tilbud:tilbudStore,running_costs:runningCosts,opp_budgets:oppBudgets,updated_at:new Date().toISOString()}).eq('id','shared');
-      if(error) throw error;
-      if(!syncOk){syncOk=true;setSyncStatus('ok','✅ Koblet til — data synkes live');}
-    }catch(e){console.warn('Save feilet:',e);setSyncStatus('err','⚠️ Lagring feilet — prøver igjen');}
-  },800);
+function setupDrag(){
+  let dragging=null,dType=null,startX=0,oS=0,oE=0,oW=0,cW=0;
+  document.querySelectorAll('.gantt-bar').forEach(bar=>{
+    bar.addEventListener('mousedown',e=>{if(e.target.dataset.handle)return;e.preventDefault();const it=timeline.find(t=>t.id===bar.dataset.id);if(!it)return;cW=bar.parentElement.offsetWidth/W_C;dragging=it;dType='move';startX=e.clientX;oS=it.s;oE=it.e;});
+    bar.querySelectorAll('.drag-handle-l,.drag-handle-r').forEach(h=>{h.addEventListener('mousedown',e=>{e.preventDefault();e.stopPropagation();const it=timeline.find(t=>t.id===h.dataset.id);if(!it)return;cW=bar.parentElement.offsetWidth/W_C;dragging=it;dType=h.dataset.handle==='l'?'rl':'rr';startX=e.clientX;oS=it.s;oE=it.e;});});
+  });
+  document.querySelectorAll('.gantt-diamond[data-id]').forEach(dm=>{dm.addEventListener('mousedown',e=>{e.preventDefault();const it=timeline.find(t=>t.id===dm.dataset.id);if(!it)return;cW=dm.parentElement.offsetWidth/W_C;dragging=it;dType='dm';startX=e.clientX;oW=it.w;});});
+  const onMove=e=>{if(!dragging)return;const dx=e.clientX-startX,dW=dx/cW,snap=v=>Math.round(v*2)/2;
+    if(dType==='move'){const dur=oE-oS;let ns=snap(oS+dW);ns=Math.max(10,Math.min(31-dur,ns));dragging.s=ns;dragging.e=ns+dur;}
+    else if(dType==='rl'){let ns=snap(oS+dW);ns=Math.max(10,Math.min(dragging.e-.5,ns));dragging.s=ns;}
+    else if(dType==='rr'){let ne=snap(oE+dW);ne=Math.max(dragging.s+.5,Math.min(31,ne));dragging.e=ne;}
+    else if(dType==='dm'){let nw=snap(oW+dW);nw=Math.max(10,Math.min(31,nw));dragging.w=nw;}
+    renderGantt();};
+  const onUp=()=>{if(dragging){dragging=null;saveProj();}};
+  document.addEventListener('mousemove',onMove);document.addEventListener('mouseup',onUp);
 }
 
-// REALTIME
-function setupRealtime(){
-  sb.channel('budsjett_changes').on('postgres_changes',{event:'UPDATE',schema:'public',table:'budsjett_data',filter:'id=eq.shared'},(payload)=>{
-    const d=payload.new;
-    if(d){tilbudStore=d.tilbud||{};runningCosts=d.running_costs||[];oppBudgets=d.opp_budgets||{};render();}
-  }).subscribe();
+// DOUBLE-CLICK TO ADD
+function setupDblClick(){
+  document.querySelectorAll('.gantt-row-cells').forEach(rc=>{
+    rc.addEventListener('dblclick',e=>{
+      if(e.target.closest('.gantt-bar')||e.target.closest('.gantt-diamond'))return;
+      const rect=rc.getBoundingClientRect();const x=e.clientX-rect.left;const week=10+(x/rect.width)*W_C;
+      const rowName=rc.dataset.rowname;
+      showAddModal(rowName,Math.round(week*2)/2);
+    });
+  });
 }
 
-// ===== DATA =====
-const MONTHS=['Jan','Feb','Mar','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Des'];
-const YEARS=[2026,2027,2028,2029,2030];
-const OPP_ORIGINAL=5000000;
-const DEFAULT_OPP=[  {id:'opp_arkitekt',name:'Arkitekt / planlegging',defaultBudget:400000},  {id:'opp_entreprenor',name:'Entreprenør (rigg, drift, prosjektledelse)',defaultBudget:500000},  {id:'opp_tomrer',name:'Tømrer / snekkerarbeid',defaultBudget:800000},  {id:'opp_elektro',name:'Elektriker / el-installasjon',defaultBudget:650000},  {id:'opp_bad_vvs',name:'Bad / VVS / rørlegger',defaultBudget:500000},  {id:'opp_kjokken',name:'Kjøkken / kantine / pantry',defaultBudget:350000},  {id:'opp_maler',name:'Maler / overflatebehandling',defaultBudget:250000},  {id:'opp_innredning',name:'Innredning (møbler, belysning, soner)',defaultBudget:600000},  {id:'opp_tekn_kontor',name:'Teknisk kontorutstyr (AV, nettverk, skjermer)',defaultBudget:400000},  {id:'opp_tilgang',name:'Tilgangskontroll (lås, nøkkelkort, alarm)',defaultBudget:250000},  {id:'opp_diverse',name:'Diverse / uforutsett',defaultBudget:300000},];
-
-let oppBudgets={},tilbudStore={},runningCosts=[],currentYear=2026,editMode=false,editDraft={};
-
-function getSavedOppB(id){return oppBudgets[id]!==undefined?oppBudgets[id]:(DEFAULT_OPP.find(d=>d.id===id)||{}).defaultBudget||0;}
-function getOppTotal(){return DEFAULT_OPP.reduce((s,d)=>s+getSavedOppB(d.id),0);}
-function getOppItems(){return DEFAULT_OPP.map(d=>({...d,budget:getSavedOppB(d.id)}));}
-
-const INV_FIXED=[{id:'maskiner',name:'Etableringskost strikkemaskiner/symaskiner',budget:1210000},{id:'stiftelse',name:'Opprettelse av stiftelse',budget:300000}];
-function getInvestTotal(){return INV_FIXED.reduce((s,i)=>s+i.budget,0)+getOppTotal();}
-
-const driftData={
-  2026:{categories:[{name:'👥 Ansatte',items:[{id:'lonn_dl',name:'Daglig leder (lønn + sos.kost)',budget:1300000},{id:'lonn_pu',name:'Produktutvikler / produksjonsmedarb.',budget:1040000},{id:'lonn_cm',name:'Community manager',budget:845000}]},{name:'🏢 Fasiliteter',items:[{id:'leie_lokale',name:'Leie av lokale',budget:1100000},{id:'drift_vedlikehold',name:'Drift og vedlikehold',budget:200000}]},{name:'⚙️ Produksjon',items:[{id:'leasing_maskiner',name:'Leasing av maskiner',budget:751536},{id:'garn_materiell',name:'Garn og materiell',budget:300000},{id:'pilot_prod',name:'Pilotproduksjon og produktutvikling',budget:400000}]},{name:'📣 Kommunikasjon',items:[{id:'komm_arrangement',name:'Kommunikasjon og arrangement',budget:550000}]},{name:'🤝 Samarbeid',items:[{id:'samarbeid_utd',name:'Samarbeid, utdanning og representasjon',budget:450000},{id:'ekstern_hjelp',name:'Ekstern hjelp – forretningsutvikling',budget:950000}]}],totalRevenue:3275680},
-  2027:{categories:[{name:'👥 Ansatte',items:[{id:'lonn_dl',name:'Daglig leder',budget:1339000},{id:'lonn_pu',name:'Produktutvikler',budget:1071200},{id:'lonn_cm',name:'Community manager',budget:870350}]},{name:'🏢 Fasiliteter',items:[{id:'leie_lokale',name:'Leie av lokale',budget:1166000},{id:'drift_vedlikehold',name:'Drift og vedlikehold',budget:270000}]},{name:'⚙️ Produksjon',items:[{id:'leasing_maskiner',name:'Leasing',budget:841720},{id:'garn_materiell',name:'Garn og materiell',budget:400000},{id:'pilot_prod',name:'Pilotproduksjon',budget:500000}]},{name:'📣 Kommunikasjon',items:[{id:'komm_arrangement',name:'Kommunikasjon',budget:650000}]},{name:'🤝 Samarbeid',items:[{id:'samarbeid_utd',name:'Samarbeid/utdanning',budget:550000},{id:'ekstern_hjelp',name:'Ekstern hjelp',budget:730769}]}],totalRevenue:5036610},
-  2028:{categories:[{name:'👥 Ansatte',items:[{id:'lonn_dl',name:'Daglig leder',budget:1379170},{id:'lonn_pu',name:'Produktutvikler',budget:1103336},{id:'lonn_cm',name:'Community manager',budget:896461}]},{name:'🏢 Fasiliteter',items:[{id:'leie_lokale',name:'Leie av lokale',budget:1235960},{id:'drift_vedlikehold',name:'Drift og vedlikehold',budget:340000}]},{name:'⚙️ Produksjon',items:[{id:'leasing_maskiner',name:'Leasing',budget:942727},{id:'garn_materiell',name:'Garn og materiell',budget:500000},{id:'pilot_prod',name:'Pilotproduksjon',budget:600000}]},{name:'📣 Kommunikasjon',items:[{id:'komm_arrangement',name:'Kommunikasjon',budget:750000}]},{name:'🤝 Samarbeid',items:[{id:'samarbeid_utd',name:'Samarbeid/utdanning',budget:650000},{id:'ekstern_hjelp',name:'Ekstern hjelp',budget:456731}]}],totalRevenue:6426215},
-  2029:{categories:[{name:'👥 Ansatte',items:[{id:'lonn_dl',name:'Daglig leder',budget:1420545},{id:'lonn_pu',name:'Produktutvikler',budget:1136436},{id:'lonn_cm',name:'Community manager',budget:923354}]},{name:'🏢 Fasiliteter',items:[{id:'leie_lokale',name:'Leie av lokale',budget:1310118},{id:'drift_vedlikehold',name:'Drift og vedlikehold',budget:410000}]},{name:'⚙️ Produksjon',items:[{id:'leasing_maskiner',name:'Leasing',budget:1055854},{id:'garn_materiell',name:'Garn og materiell',budget:600000},{id:'pilot_prod',name:'Pilotproduksjon',budget:700000}]},{name:'📣 Kommunikasjon',items:[{id:'komm_arrangement',name:'Kommunikasjon',budget:850000}]},{name:'🤝 Samarbeid',items:[{id:'samarbeid_utd',name:'Samarbeid/utdanning',budget:750000},{id:'ekstern_hjelp',name:'Ekstern hjelp',budget:326236}]}],totalRevenue:7965008},
-  2030:{categories:[{name:'👥 Ansatte',items:[{id:'lonn_dl',name:'Daglig leder',budget:1463161},{id:'lonn_pu',name:'Produktutvikler',budget:1170529},{id:'lonn_cm',name:'Community manager',budget:951055}]},{name:'🏢 Fasiliteter',items:[{id:'leie_lokale',name:'Leie av lokale',budget:1388725},{id:'drift_vedlikehold',name:'Drift og vedlikehold',budget:460000}]},{name:'⚙️ Produksjon',items:[{id:'leasing_maskiner',name:'Leasing',budget:1182556},{id:'garn_materiell',name:'Garn og materiell',budget:650000},{id:'pilot_prod',name:'Pilotproduksjon',budget:750000}]},{name:'📣 Kommunikasjon',items:[{id:'komm_arrangement',name:'Kommunikasjon',budget:900000}]},{name:'🤝 Samarbeid',items:[{id:'samarbeid_utd',name:'Samarbeid/utdanning',budget:800000},{id:'ekstern_hjelp',name:'Ekstern hjelp',budget:217491}]}],totalRevenue:8550315}
-};
-
-// ===== HELPERS =====
-function fmt(n){return Math.round(n).toLocaleString('nb-NO');}
-function parseNum(s){return parseFloat(String(s).replace(/\s/g,'').replace(/,/g,'.'))||0;}
-function getKey(y,id){return y+'_'+id;}
-function getValgtSum(y,id){return(tilbudStore[getKey(y,id)]||[]).reduce((s,t)=>s+(t.valgt?t.pris:0),0);}
-function getRunningForYear(pid,yr){let t=0;runningCosts.filter(rc=>rc.id===pid).forEach(rc=>{if(yr<rc.startYear)return;t+=rc.mndBelop*(yr===rc.startYear?(12-rc.startMonth):12);});return t;}
-function getRunningBreakdown(pid,yr){const m=new Array(12).fill(0);runningCosts.filter(rc=>rc.id===pid).forEach(rc=>{if(yr<rc.startYear)return;for(let i=(yr===rc.startYear?rc.startMonth:0);i<12;i++)m[i]+=rc.mndBelop;});return m;}
-
-function sHTML(p){return p>100?'<span class="badge badge-red">Over</span>':p>80?'<span class="badge badge-yellow">Nærmer seg</span>':'<span class="badge badge-green">OK</span>';}
-function sC(p){return p>100?'status-over':p>80?'status-warn':'status-ok';}
-function bC(p){return p>100?'var(--red)':p>80?'var(--yellow)':'var(--green)';}
-function vC(v){return v>=0?'var(--green)':'var(--red)';}
-
-function showPage(p){document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));document.querySelectorAll('.page-tab').forEach(el=>el.classList.remove('active'));document.getElementById('page-'+p).classList.add('active');document.querySelectorAll('.page-tab').forEach(el=>{if((p==='invest'&&el.textContent.includes('Invest'))||(p==='drift'&&el.textContent.includes('Drift')))el.classList.add('active');});render();}
-
-function renderTilbud(key){const t=tilbudStore[key]||[];if(!t.length)return'<div style="color:var(--text-muted);font-size:0.83em;">Ingen tilbud ennå.</div>';let h='<ul class="tilbud-list">';t.forEach((x,i)=>{h+=`<li class="tilbud-item"><span class="leverandor">${x.leverandor}</span><span class="pris">${fmt(x.pris)} kr</span><span style="color:var(--text-muted);flex:1">${x.notat||''}</span><span style="color:var(--green);font-size:0.83em">${x.valgt?'✅':''}</span><button class="btn btn-small ${x.valgt?'btn-ghost':'btn-success'}" onclick="toggleValgt('${key}',${i})">${x.valgt?'Fjern':'Velg'}</button><button class="btn btn-small btn-danger" onclick="removeTilbud('${key}',${i})">✕</button></li>`;});return h+'</ul>';}
-
-function renderRunningList(pid,yr){const entries=runningCosts.filter(rc=>rc.id===pid&&rc.startYear<=yr);if(!entries.length)return'';let h='<div style="margin-top:8px;font-size:0.76em;font-weight:600;color:var(--fjord);margin-bottom:6px;">Løpende kostnader '+yr+':</div><ul class="tilbud-list">';entries.forEach(rc=>{const gi=runningCosts.indexOf(rc);const mt=(yr===rc.startYear)?(12-rc.startMonth):12;h+=`<li class="tilbud-item"><span class="running-tag">Fra ${MONTHS[rc.startMonth]} ${rc.startYear}</span><span class="pris" style="color:var(--fjord)">${fmt(rc.mndBelop)} kr/mnd</span><span style="color:var(--text);font-weight:600;">→ ${fmt(rc.mndBelop*mt)} i ${yr}</span><span style="flex:1;color:var(--text-muted)">${rc.notat||''}</span><button class="btn btn-small btn-danger" onclick="removeRunning(${gi})">✕</button></li>`;});h+='</ul>';const bd=getRunningBreakdown(pid,yr);const mx=Math.max(...bd,1);h+='<div style="display:flex;gap:3px;align-items:flex-end;height:36px;margin-top:6px;">';bd.forEach((v,i)=>{h+=`<div title="${MONTHS[i]}: ${fmt(v)}" style="flex:1;background:${v>0?'var(--fjord)':'var(--border-light)'};height:${Math.max(v/mx*100,4)}%;border-radius:3px 3px 0 0;opacity:${v>0?0.7:0.3};"></div>`;});h+='</div><div style="display:flex;gap:3px;margin-top:2px;">';MONTHS.forEach(m=>{h+=`<div style="flex:1;text-align:center;font-size:0.58em;color:var(--text-muted);">${m.charAt(0)}</div>`;});h+='</div>';return h;}
-
-function renderYears(){const c=document.getElementById('yearSelector');c.innerHTML='';YEARS.forEach(y=>{const b=document.createElement('button');b.className='year-btn'+(y===currentYear?' active':'');b.textContent=y;b.onclick=()=>{currentYear=y;render();};c.appendChild(b);});}
-
-// ===== EDIT MODE =====
-function startEdit(){editMode=true;editDraft={};DEFAULT_OPP.forEach(d=>{editDraft[d.id]=getSavedOppB(d.id);});render();}
-function cancelEdit(){editMode=false;editDraft={};render();}
-function saveEdit(){Object.keys(editDraft).forEach(id=>{oppBudgets[id]=editDraft[id];});editMode=false;editDraft={};saveData();render();}
-function getDraftTotal(){return DEFAULT_OPP.reduce((s,d)=>s+(editDraft[d.id]!==undefined?editDraft[d.id]:getSavedOppB(d.id)),0);}
-function updateDraft(id,val){editDraft[id]=parseNum(val);}
-
-// ===== MAIN RENDER =====
-function render(){
-  renderYears();
-  const ms=document.getElementById('monthSelect');ms.innerHTML='';MONTHS.forEach((m,i)=>{ms.innerHTML+=`<option value="${i}">${m} ${currentYear}</option>`;});
-
-  const oppTotal=getOppTotal(),investTotal=getInvestTotal();
-  let iU=0;INV_FIXED.forEach(i=>{iU+=getValgtSum(2026,i.id);});getOppItems().forEach(i=>{iU+=getValgtSum(2026,i.id);});
-  const iR=investTotal-iU,iP=investTotal>0?iU/investTotal*100:0,oppDiff=oppTotal-OPP_ORIGINAL;
-
-  document.getElementById('investSummary').innerHTML=`
-    <div class="card"><div class="card-icon">🏗️</div><div class="card-label">Investeringsbudsjett</div><div class="card-value">${fmt(investTotal)}</div><div class="card-sub">Søknad: ${fmt(OPP_ORIGINAL+INV_FIXED.reduce((s,i)=>s+i.budget,0))}${oppDiff!==0?' · <span style="color:'+(oppDiff>0?'var(--red)':'var(--green)')+'">'+(oppDiff>0?'+':'')+fmt(oppDiff)+'</span>':''}</div></div>
-    <div class="card"><div class="card-icon">📋</div><div class="card-label">Valgte tilbud</div><div class="card-value" style="color:var(--accent)">${fmt(iU)}</div><div class="card-sub">${iP.toFixed(1)}%</div></div>
-    <div class="card"><div class="card-icon">✨</div><div class="card-label">Gjenstående</div><div class="card-value" style="color:${vC(iR)}">${fmt(iR)}</div><div class="progress-bar"><div class="progress-fill" style="width:${Math.min(iP,100)}%;background:${bC(iP)}"></div></div></div>`;
-
-  const eb=document.getElementById('editBar');
-  if(editMode){const dt=getDraftTotal(),dd2=dt-OPP_ORIGINAL;eb.className='edit-bar';eb.innerHTML=`<div class="edit-label"><span class="edit-indicator"></span>Redigeringsmodus — Draftsum: <strong>${fmt(dt)}</strong>${dd2!==0?' <span style="color:'+(dd2>0?'var(--red)':'var(--green)')+'">('+(dd2>0?'+':'')+fmt(dd2)+')</span>':''}</div><button class="btn btn-save" onclick="saveEdit()">💾 Lagre</button><button class="btn btn-ghost" onclick="cancelEdit()">Avbryt</button>`;}else{eb.className='hidden';}
-
-  let ih='',gIdx=0;
-  INV_FIXED.forEach(item=>{const brukt=getValgtSum(2026,item.id),rest=item.budget-brukt,pct=item.budget>0?brukt/item.budget*100:0;const key=getKey(2026,item.id),did='i_'+gIdx;ih+=`<tr><td><button class="expand-btn" id="btn_${did}" onclick="toggleRow('${did}')">▶</button></td><td class="post-name">${item.name}</td><td>${fmt(item.budget)}</td><td style="color:var(--accent)">${fmt(brukt)}</td><td class="remaining" style="color:${vC(rest)}">${fmt(rest)}</td><td>${sHTML(pct)}<div class="progress-bar"><div class="progress-fill" style="width:${Math.min(pct,100)}%;background:${bC(pct)}"></div></div></td></tr><tr id="${did}" class="detail-row hidden"><td colspan="6">${renderTilbud(key)}</td></tr>`;gIdx++;});
-
-  const oppItems=getOppItems();let gU=0;oppItems.forEach(i=>{gU+=getValgtSum(2026,i.id);});const gR=oppTotal-gU,gP=oppTotal>0?gU/oppTotal*100:0;
-  ih+=`<tr class="sub-group-header"><td></td><td>🔨 Oppussing + innredning${!editMode?'<br><span class="group-total-note">Sum: <strong>'+fmt(oppTotal)+'</strong></span>':''}</td><td><strong>${fmt(oppTotal)}</strong><div class="opp-original">Søknad: ${fmt(OPP_ORIGINAL)}</div></td><td style="color:var(--accent)">${fmt(gU)}</td><td class="remaining" style="color:${vC(gR)}">${fmt(gR)}</td><td>${!editMode?'<button class="btn btn-small btn-edit" onclick="startEdit()">✏️ Rediger</button>':''}<br>${sHTML(gP)}<div class="progress-bar"><div class="progress-fill" style="width:${Math.min(gP,100)}%;background:${bC(gP)}"></div></div></td></tr>`;
-
-  oppItems.forEach(item=>{const brukt=getValgtSum(2026,item.id);const bVal=editMode?(editDraft[item.id]!==undefined?editDraft[item.id]:item.budget):item.budget;const rest=bVal-brukt,pct=bVal>0?brukt/bVal*100:0;const key=getKey(2026,item.id),did='i_'+gIdx;const isChanged=oppBudgets[item.id]!==undefined&&oppBudgets[item.id]!==item.defaultBudget;let bc=editMode?`<input class="editable-budget" type="text" value="${fmt(bVal)}" oninput="updateDraft('${item.id}',this.value)"/><span class="budget-hint">Forslag: ${fmt(item.defaultBudget)}</span>`:`<span class="budget-display">${fmt(bVal)}</span>${isChanged?'<span class="budget-hint">Forslag: '+fmt(item.defaultBudget)+'</span>':''}`;ih+=`<tr class="sub-item"><td><button class="expand-btn" id="btn_${did}" onclick="toggleRow('${did}')">▶</button></td><td class="post-name" style="padding-left:32px;">↳ ${item.name}</td><td>${bc}</td><td style="color:var(--accent)">${fmt(brukt)}</td><td class="remaining" style="color:${vC(rest)}">${fmt(rest)}</td><td>${sHTML(pct)}<div class="progress-bar"><div class="progress-fill" style="width:${Math.min(pct,100)}%;background:${bC(pct)}"></div></div></td></tr><tr id="${did}" class="detail-row hidden"><td colspan="6">${renderTilbud(key)}</td></tr>`;gIdx++;});
-
-  ih+=`<tr class="totals-row"><td></td><td><strong>TOTALT</strong></td><td><strong>${fmt(investTotal)}</strong></td><td style="color:var(--accent)"><strong>${fmt(iU)}</strong></td><td class="remaining" style="color:${vC(iR)}"><strong>${fmt(iR)}</strong></td><td></td></tr>`;
-  document.getElementById('investBody').innerHTML=ih;
-
-  const isel=document.getElementById('investSelect');isel.innerHTML='<option value="">Velg post...</option>';INV_FIXED.forEach(c=>{isel.innerHTML+=`<option value="${c.id}">${c.name}</option>`;});isel.innerHTML+='<optgroup label="🔨 Oppussing">';oppItems.forEach(i=>{isel.innerHTML+=`<option value="${i.id}">${i.name}</option>`;});isel.innerHTML+='</optgroup>';
-
-  // DRIFT
-  const dd=driftData[currentYear];if(!dd)return;
-  let cB=0,cU=0;dd.categories.forEach(cat=>{cat.items.forEach(item=>{cB+=item.budget;cU+=getRunningForYear(item.id,currentYear);});});
-  const cR=cB-cU,cP=cB>0?cU/cB*100:0;
-  const ac=new Set(runningCosts.filter(rc=>rc.startYear<=currentYear).map(rc=>rc.id)).size;
-  document.getElementById('driftInfo').innerHTML=`💡 <strong>Løpende kostnader:</strong> Legg inn mnd-beløp og startmåned. Løper automatisk ut året og videre. <em>${ac} poster påvirker ${currentYear}.</em>`;
-  document.getElementById('driftSummary').innerHTML=`
-    <div class="card"><div class="card-icon">💰</div><div class="card-label">Budsjett ${currentYear}</div><div class="card-value">${fmt(cB)}</div><div class="card-sub">Inntekt: ${fmt(dd.totalRevenue)}</div></div>
-    <div class="card"><div class="card-icon">📊</div><div class="card-label">Løpende</div><div class="card-value" style="color:var(--fjord)">${fmt(cU)}</div><div class="card-sub">${cP.toFixed(1)}%</div></div>
-    <div class="card"><div class="card-icon">✨</div><div class="card-label">Gjenstående</div><div class="card-value" style="color:${vC(cR)}">${fmt(cR)}</div><div class="progress-bar"><div class="progress-fill" style="width:${Math.min(cP,100)}%;background:${bC(cP)}"></div></div></div>
-    <div class="card"><div class="card-icon">📈</div><div class="card-label">Resultat</div><div class="card-value" style="color:${vC(dd.totalRevenue-cU)}">${fmt(dd.totalRevenue-cU)}</div></div>`;
-
-  let ch='',dIdx=0;
-  dd.categories.forEach(cat=>{ch+=`<tr class="cat-header"><td colspan="6">${cat.name}</td></tr>`;cat.items.forEach(item=>{const brukt=getRunningForYear(item.id,currentYear),rest=item.budget-brukt,pct=item.budget>0?brukt/item.budget*100:0;const did='d_'+dIdx;const entries=runningCosts.filter(rc=>rc.id===item.id&&rc.startYear<=currentYear);let tags='';if(entries.length){const bd=getRunningBreakdown(item.id,currentYear);const am=bd.filter(v=>v>0);if(am.length){tags=`<div style="margin-top:4px;"><span class="running-tag">${fmt(bd.reduce((a,b)=>a+b,0)/am.length)} kr/mnd</span><span class="actual-tag">${am.length} mnd</span></div>`;}}ch+=`<tr><td><button class="expand-btn" id="btn_${did}" onclick="toggleRow('${did}')">▶</button></td><td class="post-name">${item.name}${tags}</td><td>${fmt(item.budget)}</td><td style="color:var(--fjord);font-weight:600">${fmt(brukt)}</td><td class="remaining" style="color:${vC(rest)}">${fmt(rest)}</td><td>${sHTML(pct)}<div class="progress-bar"><div class="progress-fill" style="width:${Math.min(pct,100)}%;background:${bC(pct)}"></div></div></td></tr><tr id="${did}" class="detail-row hidden"><td colspan="6">${renderRunningList(item.id,currentYear)}</td></tr>`;dIdx++;});});
-  let tB=0,tU=0;dd.categories.forEach(cat=>{cat.items.forEach(item=>{tB+=item.budget;tU+=getRunningForYear(item.id,currentYear);});});
-  ch+=`<tr class="totals-row"><td></td><td><strong>TOTALT</strong></td><td><strong>${fmt(tB)}</strong></td><td style="color:var(--fjord)"><strong>${fmt(tU)}</strong></td><td class="remaining" style="color:${vC(tB-tU)}"><strong>${fmt(tB-tU)}</strong></td><td></td></tr>`;
-  document.getElementById('budgetBody').innerHTML=ch;
-  const sel=document.getElementById('postSelect');sel.innerHTML='<option value="">Velg post...</option>';dd.categories.forEach(cat=>{sel.innerHTML+=`<optgroup label="${cat.name}">`;cat.items.forEach(i=>{sel.innerHTML+=`<option value="${i.id}">${i.name}</option>`;});sel.innerHTML+='</optgroup>';});
+function showAddModal(row,week){
+  const allRows=[...new Set(timeline.map(t=>t.row))];
+  const rowOpts=allRows.map(r=>`<option value="${r}"${r===row?' selected':''}>${r}</option>`).join('');
+  document.getElementById('modalRoot').innerHTML=`
+  <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <h3>Legg til i tidslinjen</h3>
+      <label>Type</label>
+      <select id="mType" onchange="toggleModalFields()">
+        <option value="diamond">◆ Milepæl</option>
+        <option value="bar">▬ Prosess / periode</option>
+      </select>
+      <label>Tekst / navn</label>
+      <input type="text" id="mText" placeholder="F.eks. Byggestart"/>
+      <label>Rad</label>
+      <select id="mRow">${rowOpts}<option value="__new">+ Ny rad...</option></select>
+      <div id="mNewRowWrap" class="hidden"><label>Nytt radnavn</label><input type="text" id="mNewRow" placeholder="F.eks. Økonomi"/></div>
+      <label>Farge</label>
+      <select id="mCls">
+        <option value="${'diamond' ? 'diamond-dark' : 'bar-red'}">Mørk</option>
+        <option value="${'diamond' ? 'diamond-red' : 'bar-red'}">Rød</option>
+        <option value="${'diamond' ? 'diamond-accent' : 'bar-green'}">Grønn</option>
+      </select>
+      <div id="mWeekWrap"><label>Uke</label><input type="number" id="mWeek" value="${week}" min="10" max="31" step="0.5"/></div>
+      <div id="mBarWrap" class="hidden">
+        <label>Start (uke)</label><input type="number" id="mStart" value="${week}" min="10" max="31" step="0.5"/>
+        <label>Slutt (uke)</label><input type="number" id="mEnd" value="${Math.min(week+3,31)}" min="10" max="31" step="0.5"/>
+      </div>
+      <div class="modal-btns">
+        <button class="btn btn-ghost" onclick="closeModal()">Avbryt</button>
+        <button class="btn btn-primary" onclick="confirmAdd()">Legg til</button>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById('mRow').addEventListener('change',function(){document.getElementById('mNewRowWrap').className=this.value==='__new'?'':'hidden';});
+  toggleModalFields();
 }
 
-// ===== ACTIONS =====
-function toggleRow(id){const el=document.getElementById(id),btn=document.getElementById('btn_'+id);if(el){el.classList.toggle('hidden');if(btn)btn.classList.toggle('open');}}
-function toggleValgt(key,idx){if(tilbudStore[key]?.[idx]!==undefined){tilbudStore[key][idx].valgt=!tilbudStore[key][idx].valgt;saveData();render();}}
-function removeTilbud(key,idx){if(tilbudStore[key]){tilbudStore[key].splice(idx,1);saveData();render();}}
-function removeRunning(idx){runningCosts.splice(idx,1);saveData();render();}
-
-function addTilbud(){
-  const pid=document.getElementById('investSelect').value,lev=document.getElementById('investLeverandorInput').value.trim(),pris=parseNum(document.getElementById('investPrisInput').value),notat=document.getElementById('investNotatInput').value.trim();
-  if(!pid||!lev||!pris){alert('Fyll inn post, leverandør og pris.');return;}
-  const key=getKey(2026,pid);if(!tilbudStore[key])tilbudStore[key]=[];tilbudStore[key].push({leverandor:lev,pris,notat,valgt:false});saveData();
-  document.getElementById('investLeverandorInput').value='';document.getElementById('investPrisInput').value='';document.getElementById('investNotatInput').value='';render();
-}
-function addFaktisk(){
-  const pid=document.getElementById('postSelect').value,month=parseInt(document.getElementById('monthSelect').value),mnd=parseNum(document.getElementById('faktiskInput').value),notat=document.getElementById('faktiskNotatInput').value.trim();
-  if(!pid||!mnd){alert('Velg post og oppgi beløp.');return;}
-  runningCosts.push({id:pid,startYear:currentYear,startMonth:month,mndBelop:mnd,notat});saveData();
-  document.getElementById('faktiskInput').value='';document.getElementById('faktiskNotatInput').value='';render();
+function toggleModalFields(){
+  const t=document.getElementById('mType').value;
+  document.getElementById('mWeekWrap').className=t==='diamond'?'':'hidden';
+  document.getElementById('mBarWrap').className=t==='bar'?'':'hidden';
+  const cs=document.getElementById('mCls');
+  if(t==='diamond'){cs.innerHTML='<option value="diamond-dark">⬥ Mørk</option><option value="diamond-red">⬥ Rød</option><option value="diamond-accent">⬥ Grønn</option>';}
+  else{cs.innerHTML='<option value="bar-red">▬ Rød</option><option value="bar-warm">▬ Oransje</option><option value="bar-green">▬ Grønn</option><option value="bar-fjord">▬ Blå</option><option value="bar-gray">▬ Grå</option>';}
 }
 
-// ===== INIT =====
-loadFromSupabase();
-setupRealtime();
+function confirmAdd(){
+  const type=document.getElementById('mType').value;
+  const text=document.getElementById('mText').value.trim();
+  let row=document.getElementById('mRow').value;
+  if(row==='__new'){row=document.getElementById('mNewRow').value.trim();if(!row)return alert('Skriv radnavn.');}
+  const cls=document.getElementById('mCls').value;
+  const id='t'+Date.now();
+  if(type==='diamond'){const w=parseFloat(document.getElementById('mWeek').value)||15;timeline.push({id,row,type:'diamond',w,text,cls});}
+  else{const s=parseFloat(document.getElementById('mStart').value)||15,e=parseFloat(document.getElementById('mEnd').value)||18;timeline.push({id,row,type:'bar',s:Math.min(s,e),e:Math.max(s,e),text,cls});}
+  closeModal();saveProj();renderGantt();
+}
+function closeModal(){document.getElementById('modalRoot').innerHTML='';}
+function delRow(row){if(!confirm('Slette raden "'+row+'" og alle elementer?'))return;timeline=timeline.filter(t=>t.row!==row);saveProj();renderGantt();}
+
+// TODOS
+function renderTodos(){
+  const cats=['all','Bygg','Admin','Produksjon','Partnerskap','Ansettelse','Møte','Diverse'];
+  document.getElementById('todoFilters').innerHTML=cats.map(c=>`<button class="filter-btn${todoFilter===c?' active':''}" onclick="todoFilter='${c}';renderTodos();">${c==='all'?'Alle':c}</button>`).join('');
+  let fl=todos;if(todoFilter!=='all')fl=todos.filter(t=>t.category===todoFilter);
+  const so=[...fl].sort((a,b)=>{if(a.done!==b.done)return a.done?1:-1;const p={high:0,med:1,low:2,'':3};return(p[a.priority]||3)-(p[b.priority]||3);});
+  if(!so.length){document.getElementById('todoList').innerHTML='<div style="text-align:center;padding:24px;color:var(--text-muted)">Ingen oppgaver — legg til! 🎯</div>';return;}
+  document.getElementById('todoList').innerHTML=so.map(t=>{const ri=todos.indexOf(t);const od=t.due&&!t.done&&new Date(t.due)<new Date();return`<div class="todo-item${t.done?' done':''}"><div class="todo-top"><div class="todo-check${t.done?' checked':''}" onclick="tgTodo(${ri})">${t.done?'✓':''}</div><div class="todo-body"><div class="todo-title">${t.title}</div>${t.desc?'<div class="todo-desc">'+t.desc+'</div>':''}<div class="todo-meta">${t.assignee?'<span class="todo-tag tag-person">👤 '+t.assignee+'</span>':''}${t.category?'<span class="todo-tag tag-category">'+t.category+'</span>':''}${t.due?'<span class="todo-tag tag-due'+(od?' tag-priority-high':'')+'">📅 '+t.due+'</span>':''}${t.priority==='high'?'<span class="todo-tag tag-priority-high">🔴 Høy</span>':''}${t.priority==='med'?'<span class="todo-tag tag-priority-med">🟡 Medium</span>':''}</div></div><div><button class="btn btn-small btn-danger" onclick="delTodo(${ri})">✕</button></div></div></div>`;}).join('');
+}
+function addTodo(){const t=document.getElementById('todoTitle').value.trim();if(!t)return alert('Tittel!');todos.push({title:t,desc:document.getElementById('todoDesc').value.trim(),assignee:document.getElementById('todoAssignee').value,category:document.getElementById('todoCat').value,priority:document.getElementById('todoPri').value,due:document.getElementById('todoDue').value,done:false});saveProj();document.getElementById('todoTitle').value='';document.getElementById('todoDesc').value='';document.getElementById('todoDue').value='';renderTodos();}
+function tgTodo(i){todos[i].done=!todos[i].done;saveProj();renderTodos();}
+function delTodo(i){todos.splice(i,1);saveProj();renderTodos();}
+
+// ACTIONS
+function tR(id){const el=document.getElementById(id),btn=document.getElementById('btn_'+id);if(el){el.classList.toggle('hidden');if(btn)btn.classList.toggle('open');}}
+function tV(key,idx){if(tilbudStore[key]?.[idx]!=null){tilbudStore[key][idx].valgt=!tilbudStore[key][idx].valgt;saveBudget();renderInvest();}}
+function rTi(key,idx){tilbudStore[key]?.splice(idx,1);saveBudget();renderInvest();}
+function rRC(idx){runningCosts.splice(idx,1);saveBudget();renderDrift();}
+function addTilbud(){const p=document.getElementById('investSelect').value,l=document.getElementById('iLev').value.trim(),pr=pN(document.getElementById('iPris').value),n=document.getElementById('iNot').value.trim();if(!p||!l||!pr)return alert('Fyll inn felt.');const k=gK(2026,p);if(!tilbudStore[k])tilbudStore[k]=[];tilbudStore[k].push({leverandor:l,pris:pr,notat:n,valgt:false});saveBudget();document.getElementById('iLev').value='';document.getElementById('iPris').value='';document.getElementById('iNot').value='';renderInvest();}
+function addFaktisk(){const p=document.getElementById('postSelect').value,m=parseInt(document.getElementById('monthSelect').value),b=pN(document.getElementById('faktiskInput').value),n=document.getElementById('faktiskNot').value.trim();if(!p||!b)return alert('Post og beløp.');runningCosts.push({id:p,startYear:currentYear,startMonth:m,mndBelop:b,notat:n});saveBudget();document.getElementById('faktiskInput').value='';document.getElementById('faktiskNot').value='';renderDrift();}
+
+loadData();
 </script>
 </body>
 </html>
