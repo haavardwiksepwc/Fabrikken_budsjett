@@ -12,7 +12,6 @@
 body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;-webkit-user-select:none;user-select:none;}
 .hero{position:relative;width:100%;height:200px;overflow:hidden;background:linear-gradient(135deg,#3d6b5e,#5a8fa8 50%,#c4956a);display:flex;align-items:flex-end;justify-content:center;}
 .hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(44,40,37,.1),rgba(44,40,37,.55));}
-.hero-mountains{position:absolute;bottom:0;left:0;right:0;height:100px;}
 .hero-content{position:relative;z-index:2;text-align:center;padding:0 20px 22px;}
 .hero-content h1{font-family:'DM Serif Display',serif;font-size:2em;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.2);}
 .hero-content p{color:rgba(255,255,255,.85);font-size:.88em;}
@@ -20,7 +19,7 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 .sync-ok{background:rgba(74,158,110,.3);color:#a8f0c8;}.sync-err{background:rgba(192,86,79,.3);color:#f8b4b0;}.sync-loading{background:rgba(255,255,255,.2);color:#fff;}
 .container{max-width:1250px;margin:0 auto;padding:0 20px 40px;margin-top:-28px;position:relative;z-index:3;}
 .page-tabs{display:flex;gap:0;justify-content:center;margin-bottom:18px;background:var(--surface);border-radius:12px;border:1.5px solid var(--border);overflow:hidden;box-shadow:var(--shadow);max-width:650px;margin-left:auto;margin-right:auto;}
-.page-tab{flex:1;padding:10px 14px;border:none;background:transparent;color:var(--text-muted);cursor:pointer;font-size:.84em;font-weight:600;font-family:inherit;transition:all .2s;text-align:center;}
+.page-tab{flex:1;padding:10px 14px;border:none;background:transparent;color:var(--text-muted);cursor:pointer;font-size:.84em;font-weight:600;font-family:inherit;text-align:center;}
 .page-tab:not(:last-child){border-right:1.5px solid var(--border);}
 .page-tab:hover{color:var(--accent);background:var(--accent-light);}
 .page-tab.active{background:var(--accent);color:#fff;}
@@ -32,13 +31,12 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 .card{background:var(--surface);border:1px solid var(--border-light);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);}
 .card-icon{font-size:1.2em;margin-bottom:4px;}.card-label{font-size:.68em;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:2px;font-weight:600;}.card-value{font-size:1.4em;font-weight:700;}
 .section{margin-bottom:22px;}.section-title{font-family:'DM Serif Display',serif;font-size:1.1em;margin-bottom:9px;}
-.cat-header td{font-weight:700!important;color:var(--accent)!important;font-size:.78em!important;padding-top:11px!important;background:var(--accent-light)!important;border-bottom:1px solid var(--border)!important;text-transform:uppercase;letter-spacing:.5px;}
+.cat-header td{font-weight:700!important;color:var(--accent)!important;font-size:.78em!important;padding-top:11px!important;background:var(--accent-light)!important;border-bottom:1px solid var(--border)!important;text-transform:uppercase;}
 .budget-table{width:100%;border-collapse:separate;border-spacing:0;background:var(--surface);border-radius:var(--radius);border:1px solid var(--border-light);overflow:hidden;box-shadow:var(--shadow);}
 .budget-table th{text-align:left;padding:9px 11px;font-size:.64em;text-transform:uppercase;letter-spacing:.7px;color:var(--text-muted);background:var(--surface2);border-bottom:1px solid var(--border);font-weight:600;}
 .budget-table td{padding:8px 11px;border-bottom:1px solid var(--border-light);font-size:.83em;}
 .budget-table tr:last-child td{border-bottom:none;}.budget-table tr:hover td{background:var(--accent-light);}
-.post-name{font-weight:500;}.remaining{font-weight:600;}
-.progress-bar{width:100%;height:4px;background:var(--border-light);border-radius:3px;overflow:hidden;margin-top:3px;}.progress-fill{height:100%;border-radius:3px;}
+.post-name{font-weight:500;}.progress-bar{width:100%;height:4px;background:var(--border-light);border-radius:3px;overflow:hidden;margin-top:3px;}.progress-fill{height:100%;border-radius:3px;}
 .tilbud-list{list-style:none;}.tilbud-item{display:flex;align-items:center;gap:7px;padding:5px 0;font-size:.8em;color:var(--text-muted);border-bottom:1px dashed var(--border-light);flex-wrap:wrap;}.tilbud-item:last-child{border-bottom:none;}.tilbud-item .leverandor{font-weight:600;color:var(--text);min-width:80px;}.tilbud-item .pris{color:var(--accent);font-weight:700;min-width:80px;}
 .add-row{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:flex-end;}
 .add-row input,.add-row select{padding:8px 10px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font-size:.82em;font-family:inherit;}
@@ -70,22 +68,22 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 .gantt-month-row{display:flex;background:var(--surface2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:5;}
 .gantt-month-cell{text-align:center;font-size:.72em;font-weight:700;color:var(--accent);padding:5px 0;border-right:1px solid var(--border-light);}
 .gantt-header{display:flex;border-bottom:1px solid var(--border);position:sticky;top:28px;z-index:4;background:var(--surface2);}
-.gantt-label-col{min-width:170px;max-width:170px;padding:6px 10px;font-size:.66em;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px;border-right:1px solid var(--border-light);}
+.gantt-label-col{min-width:170px;max-width:170px;padding:6px 10px;font-size:.66em;font-weight:700;color:var(--text-muted);text-transform:uppercase;border-right:1px solid var(--border-light);}
 .gantt-weeks{display:flex;flex:1;}.gantt-week{flex:1;min-width:42px;text-align:center;padding:5px 1px;font-size:.6em;color:var(--text-muted);font-weight:600;border-right:1px solid var(--border-light);}
 .gantt-row{display:flex;border-bottom:1px solid var(--border-light);min-height:42px;align-items:center;}
 .gantt-row:hover{background:rgba(61,107,94,.04);}
 .gantt-row-label{min-width:170px;max-width:170px;padding:5px 10px;font-size:.76em;font-weight:500;border-right:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;}
 .gantt-row-cells{display:flex;flex:1;position:relative;height:42px;}.gantt-cell{flex:1;min-width:42px;border-right:1px solid var(--border-light);height:100%;}
 .gantt-bar{position:absolute;top:9px;height:22px;border-radius:5px;font-size:.6em;color:#fff;font-weight:600;display:flex;align-items:center;padding:0 5px;cursor:grab;white-space:nowrap;overflow:visible;z-index:2;box-shadow:0 1px 3px rgba(0,0,0,.15);}
-.gantt-bar:active{cursor:grabbing;opacity:.8;}
+.gantt-bar.dragging{opacity:.8;cursor:grabbing;box-shadow:0 3px 12px rgba(0,0,0,.25);}
 .gantt-bar .drag-handle-l,.gantt-bar .drag-handle-r{position:absolute;top:0;width:8px;height:100%;cursor:ew-resize;z-index:3;}
 .gantt-bar .drag-handle-l{left:0;border-radius:5px 0 0 5px;}.gantt-bar .drag-handle-r{right:0;border-radius:0 5px 5px 0;}
 .gantt-bar .drag-handle-l:hover,.gantt-bar .drag-handle-r:hover{background:rgba(255,255,255,.3);}
 .gantt-del{position:absolute;top:-8px;right:-8px;width:18px;height:18px;border-radius:50%;background:var(--red);color:#fff;font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;cursor:pointer;z-index:10;box-shadow:0 1px 4px rgba(0,0,0,.3);line-height:1;}
 .gantt-bar:hover .gantt-del,.gantt-dm-wrap:hover .gantt-del{display:flex;}
 .gantt-diamond{width:16px;height:16px;transform:rotate(45deg);border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:grab;flex-shrink:0;}
-.gantt-diamond:active{cursor:grabbing;opacity:.8;}
 .gantt-dm-wrap{position:absolute;top:6px;display:flex;flex-direction:column;align-items:center;z-index:2;}
+.gantt-dm-wrap.dragging{opacity:.8;}
 .gantt-dm-label{font-size:.56em;color:var(--text-muted);white-space:nowrap;margin-top:2px;font-weight:500;pointer-events:none;}
 .bar-red{background:#d4645c;}.bar-green{background:var(--accent);}.bar-warm{background:var(--warm);}.bar-fjord{background:var(--fjord);}.bar-gray{background:#b5b0a8;}
 .diamond-red{background:#d4645c;}.diamond-dark{background:#666;}.diamond-accent{background:var(--accent);}
@@ -95,13 +93,13 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 .modal h3{font-family:'DM Serif Display',serif;font-size:1.1em;margin-bottom:12px;}
 .modal label{font-size:.78em;font-weight:600;color:var(--text-muted);display:block;margin-bottom:3px;margin-top:10px;}
 .modal input,.modal select{width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.85em;color:var(--text);background:var(--surface);}
-.modal input:focus,.modal select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light);}
+.modal input:focus,.modal select:focus{outline:none;border-color:var(--accent);}
 .modal-btns{display:flex;gap:8px;margin-top:16px;}.modal-btns .btn{flex:1;padding:10px;text-align:center;}
 .todo-list{display:flex;flex-direction:column;gap:7px;}
 .todo-item{background:var(--surface);border:1px solid var(--border-light);border-radius:11px;padding:12px 14px;box-shadow:var(--shadow);}
 .todo-item.done{opacity:.5;}.todo-item.done .todo-title{text-decoration:line-through;}
 .todo-top{display:flex;align-items:flex-start;gap:9px;}
-.todo-check{width:20px;height:20px;border:2px solid var(--border);border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-size:.75em;}
+.todo-check{width:20px;height:20px;border:2px solid var(--border);border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.75em;}
 .todo-check.checked{background:var(--accent);border-color:var(--accent);color:#fff;}
 .todo-body{flex:1;min-width:0;}.todo-title{font-weight:600;font-size:.86em;}.todo-desc{font-size:.78em;color:var(--text-muted);margin-bottom:4px;}
 .todo-meta{display:flex;gap:6px;flex-wrap:wrap;}.todo-tag{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:5px;font-size:.66em;font-weight:600;}
@@ -115,30 +113,26 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:v
 .add-todo-form input:focus,.add-todo-form select:focus,.add-todo-form textarea:focus{outline:none;border-color:var(--accent);}
 .form-row{display:flex;gap:7px;align-items:flex-end;}.form-row>*{flex:1;}
 .gantt-hint{font-size:.75em;color:var(--text-muted);margin-bottom:8px;}
+.people-chips{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;}
+.person-chip{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:6px;font-size:.72em;font-weight:600;background:var(--fjord-light);color:var(--fjord);}
+.person-chip .chip-del{cursor:pointer;opacity:.5;font-size:.9em;}.person-chip .chip-del:hover{opacity:1;color:var(--red);}
 .person-add-row{display:flex;gap:5px;align-items:center;margin-top:4px;}
 .person-add-row input{flex:1;padding:6px 9px;border:1.5px solid var(--border);border-radius:7px;font-size:.8em;font-family:inherit;color:var(--text);}
 .person-add-row input:focus{outline:none;border-color:var(--accent);}
 .person-add-row button{padding:6px 10px;border:none;border-radius:7px;background:var(--accent);color:#fff;font-size:.78em;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;}
-.people-chips{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;}
-.person-chip{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:6px;font-size:.72em;font-weight:600;background:var(--fjord-light);color:var(--fjord);}
-.person-chip .chip-del{cursor:pointer;opacity:.5;font-size:.9em;}.person-chip .chip-del:hover{opacity:1;color:var(--red);}
-@media(max-width:768px){.budget-table{display:block;overflow-x:auto;}.add-row,.form-row{flex-direction:column;}.add-row input,.add-row select{width:100%;}.hero-content h1{font-size:1.3em;}.hero{height:170px;}.gantt-label-col,.gantt-row-label{min-width:110px;max-width:110px;}.modal{width:95vw;}}
+@media(max-width:768px){.budget-table{display:block;overflow-x:auto;}.add-row,.form-row{flex-direction:column;}.hero-content h1{font-size:1.3em;}.hero{height:170px;}.gantt-label-col,.gantt-row-label{min-width:110px;max-width:110px;}.modal{width:95vw;}}
 </style>
 </head>
 <body>
-<div class="hero"><div class="hero-overlay"></div><svg class="hero-mountains" viewBox="0 0 1440 100" preserveAspectRatio="none" fill="none"><path d="M0 100 L0 60 L120 25 L240 45 L360 10 L480 40 L560 20 L680 50 L780 8 L900 38 L1020 15 L1100 45 L1200 25 L1320 42 L1440 28 L1440 100Z" fill="#3d6b5e" opacity=".45"/><path d="M0 80 Q360 68 720 75 Q1080 82 1440 72 L1440 100 L0 100Z" fill="var(--bg)"/></svg><div class="hero-content"><h1>Fabrikken ved Fjorden</h1><p>Budsjett & Prosjektstyring</p><div id="syncStatus" class="sync-status sync-loading">⏳ Laster...</div></div></div>
+<div class="hero"><div class="hero-overlay"></div><svg class="hero-mountains" viewBox="0 0 1440 100" preserveAspectRatio="none" fill="none"><path d="M0 100 L0 60 L120 25 L240 45 L360 10 L480 40 L560 20 L680 50 L780 8 L900 38 L1020 15 L1440 28 L1440 100Z" fill="#3d6b5e" opacity=".45"/><path d="M0 80 Q360 68 720 75 Q1080 82 1440 72 L1440 100 L0 100Z" fill="var(--bg)"/></svg><div class="hero-content"><h1>Fabrikken ved Fjorden</h1><p>Budsjett & Prosjektstyring</p><div id="syncStatus" class="sync-status sync-loading">⏳ Laster...</div></div></div>
 <div class="container">
   <div class="page-tabs"><button class="page-tab active" onclick="showPage('invest')">🏗️ Investeringer</button><button class="page-tab" onclick="showPage('drift')">💰 Drift</button><button class="page-tab" onclick="showPage('prosjekt')">📋 Prosjekt</button></div>
   <div class="page active" id="page-invest"><div class="summary-cards" id="investSummary"></div><div id="editBar" class="hidden"></div><div class="section"><div class="section-title">Investeringsbudsjett 2026</div><table class="budget-table"><thead><tr><th style="width:24px"></th><th>Post</th><th>Budsjett</th><th>Tilbud</th><th>Gjenstående</th><th>Status</th></tr></thead><tbody id="investBody"></tbody></table></div><div class="section"><div class="section-title">Legg til tilbud</div><div class="add-row"><select id="investSelect"></select><input type="text" id="iLev" placeholder="Leverandør"/><input type="text" id="iPris" placeholder="Pris"/><input type="text" id="iNot" placeholder="Notat"/><button class="btn btn-primary" onclick="addTilbud()">+</button></div></div></div>
   <div class="page" id="page-drift"><div class="year-selector" id="yearSel"></div><div class="summary-cards" id="driftSummary"></div><div class="info-box" id="driftInfo"></div><div class="section"><div class="section-title">Driftskostnader</div><table class="budget-table"><thead><tr><th style="width:24px"></th><th>Post</th><th>Budsjett</th><th>Løpende</th><th>Gjenstående</th><th>Status</th></tr></thead><tbody id="budgetBody"></tbody></table></div><div class="section"><div class="section-title">Registrer løpende</div><div class="add-row"><select id="postSelect"></select><select id="monthSelect"></select><input type="text" id="faktiskInput" placeholder="Mnd beløp"/><input type="text" id="faktiskNot" placeholder="Notat"/><button class="btn btn-primary" onclick="addFaktisk()">+</button></div></div></div>
   <div class="page" id="page-prosjekt">
     <div class="section"><div class="section-title">📅 Prosjektplan</div><div class="gantt-hint">💡 <strong>Dra</strong> = flytt · <strong>Dra kanter</strong> = endre lengde · <strong>Dobbeltklikk</strong> = legg til · <strong>✕</strong> = slett</div><div class="gantt-wrap"><div id="ganttChart"></div></div></div>
-    <div class="section">
-      <div class="section-title">✅ Oppgaver</div>
-      <div style="margin-bottom:10px;"><div style="font-size:.78em;font-weight:600;color:var(--text-muted);margin-bottom:4px;">👥 Teammedlemmer</div><div class="people-chips" id="peopleChips"></div><div class="person-add-row"><input type="text" id="newPersonInput" placeholder="Legg til person..." onkeydown="if(event.key==='Enter')addPerson()"/><button onclick="addPerson()">+ Person</button></div></div>
-      <div class="todo-filters" id="todoFilters"></div>
-      <div class="todo-list" id="todoList"></div>
-      <div class="add-todo-form"><div style="font-weight:600;font-size:.85em;margin-bottom:6px;">Ny oppgave</div><input type="text" id="todoTitle" placeholder="Tittel *"/><textarea id="todoDesc" placeholder="Beskrivelse"></textarea><div class="form-row"><select id="todoAssignee"></select><select id="todoCat"><option value="">Kategori</option><option>Bygg</option><option>Admin</option><option>Produksjon</option><option>Partnerskap</option><option>Ansettelse</option><option>Møte</option><option>Diverse</option></select><select id="todoPri"><option value="">Prioritet</option><option value="high">🔴 Høy</option><option value="med">🟡 Medium</option><option value="low">🟢 Lav</option></select></div><div class="form-row"><input type="date" id="todoDue"/><button class="btn btn-primary" onclick="addTodo()" style="flex:none">+ Oppgave</button></div></div>
+    <div class="section"><div class="section-title">✅ Oppgaver</div><div style="margin-bottom:10px"><div style="font-size:.78em;font-weight:600;color:var(--text-muted);margin-bottom:4px">👥 Teammedlemmer</div><div class="people-chips" id="peopleChips"></div><div class="person-add-row"><input type="text" id="newPersonInput" placeholder="Legg til person..." onkeydown="if(event.key==='Enter')addPerson()"/><button onclick="addPerson()">+ Person</button></div></div><div class="todo-filters" id="todoFilters"></div><div class="todo-list" id="todoList"></div>
+      <div class="add-todo-form"><div style="font-weight:600;font-size:.85em;margin-bottom:6px">Ny oppgave</div><input type="text" id="todoTitle" placeholder="Tittel *"/><textarea id="todoDesc" placeholder="Beskrivelse"></textarea><div class="form-row"><select id="todoAssignee"></select><select id="todoCat"><option value="">Kategori</option><option>Bygg</option><option>Admin</option><option>Produksjon</option><option>Partnerskap</option><option>Ansettelse</option><option>Møte</option><option>Diverse</option></select><select id="todoPri"><option value="">Prioritet</option><option value="high">🔴 Høy</option><option value="med">🟡 Medium</option><option value="low">🟢 Lav</option></select></div><div class="form-row"><input type="date" id="todoDue"/><button class="btn btn-primary" onclick="addTodo()" style="flex:none">+ Oppgave</button></div></div>
     </div>
   </div>
 </div>
@@ -148,19 +142,21 @@ const SB_URL='https://khvehsncuqkndvzkqwmh.supabase.co',SB_KEY='sb_publishable_u
 const sb=window.supabase.createClient(SB_URL,SB_KEY);
 let syncOk=false;function setSS(s,m){const e=document.getElementById('syncStatus');e.className='sync-status sync-'+s;e.textContent=m;}
 let tilbudStore={},runningCosts=[],oppBudgets={},todos=[],timeline=[],people=[],currentYear=2026,editMode=false,editDraft={},todoFilter='all';
-
 const defaultPeople=['Steffen','Gerda','Maren','Håvard','Susanne'];
 const defaultTimeline=[  {id:'t1',row:'Arkitekt',type:'bar',s:10,e:12.5,text:'Tilbud',cls:'bar-red'},  {id:'t2',row:'Arkitekt',type:'bar',s:12.5,e:15,text:'Kontrakt/planlegging',cls:'bar-warm'},  {id:'t3',row:'Bygging',type:'bar',s:14,e:15.5,text:'Tilbud',cls:'bar-red'},  {id:'t4',row:'Bygging',type:'bar',s:15.5,e:17,text:'Bestillingstid?',cls:'bar-warm'},  {id:'t5',row:'Bygging',type:'bar',s:17,e:30,text:'Bygging??',cls:'bar-red'},  {id:'t6',row:'Dugnad/dokumentere?',type:'diamond',w:15.5,text:'Byggestart',cls:'diamond-red'},  {id:'t7',row:'Dugnad/dokumentere?',type:'diamond',w:18,text:'Maledugnad?',cls:'diamond-red'},  {id:'t8',row:'Dugnad/dokumentere?',type:'diamond',w:22,text:'Planløsning ferdig',cls:'diamond-red'},  {id:'t9',row:'Dugnad/dokumentere?',type:'diamond',w:27,text:'Flyttedugnad?',cls:'diamond-red'},  {id:'t10',row:'Dugnad/dokumentere?',type:'diamond',w:30,text:'Innflyttingsfest',cls:'diamond-red'},  {id:'t11',row:'Milepæler/frister',type:'diamond',w:11,text:'Bestemme arkitekt',cls:'diamond-dark'},  {id:'t12',row:'Milepæler/frister',type:'diamond',w:15,text:'Bestemme Entreprenør',cls:'diamond-dark'},  {id:'t13',row:'Milepæler/frister',type:'diamond',w:30,text:'Innflytting',cls:'diamond-dark'},  {id:'t14',row:'Møter',type:'diamond',w:10,text:'Løpende ukentlig status',cls:'diamond-dark'},  {id:'t15',row:'Møter',type:'diamond',w:11.5,text:'Møter med arkitekt',cls:'diamond-dark'},  {id:'t16',row:'Møter',type:'diamond',w:15,text:'Løpende møter med entreprenør',cls:'diamond-dark'},  {id:'t17',row:'Møter',type:'bar',s:10,e:13,text:'',cls:'bar-green'},  {id:'t18',row:'Møter',type:'bar',s:15,e:30,text:'',cls:'bar-green'},  {id:'t19',row:'Nye strikkemaskiner',type:'bar',s:20,e:23,text:'Leie av produksjonskapasitet?',cls:'bar-fjord'},  {id:'t20',row:'Nye strikkemaskiner',type:'bar',s:23,e:26,text:'Produktsalg volum?',cls:'bar-warm'},  {id:'t21',row:'Nye strikkemaskiner',type:'bar',s:26,e:31,text:'',cls:'bar-gray'},  {id:'t22',row:'Partnerskap/søknader/Eventutleie',type:'diamond',w:22,text:'Første partnerskap',cls:'diamond-dark'},  {id:'t23',row:'Partnerskap/søknader/Eventutleie',type:'diamond',w:30,text:'Andre partnerskap',cls:'diamond-dark'},  {id:'t24',row:'Ansettelser og admin',type:'diamond',w:13,text:'Stiftelse opprettet',cls:'diamond-dark'},  {id:'t25',row:'Ansettelser og admin',type:'diamond',w:14,text:'ERP-system opprettet',cls:'diamond-dark'},  {id:'t26',row:'Ansettelser og admin',type:'diamond',w:15,text:'Velge regnskapsfører',cls:'diamond-dark'},  {id:'t27',row:'Ansettelser og admin',type:'diamond',w:17.5,text:'Community manager',cls:'diamond-dark'},  {id:'t28',row:'Ansettelser og admin',type:'diamond',w:22,text:'Produktutvikler?',cls:'diamond-accent'},  {id:'t29',row:'Ansettelser og admin',type:'diamond',w:25,text:'Admin?',cls:'diamond-accent'},];
 
 async function loadData(){
-  try{const{data,error}=await sb.from('budsjett_data').select('*').eq('id','shared').single();if(error)throw error;if(data){tilbudStore=data.tilbud||{};runningCosts=data.running_costs||[];oppBudgets=data.opp_budgets||{};}syncOk=true;}catch(e){tilbudStore=JSON.parse(localStorage.getItem('fvf_tG')||'{}');runningCosts=JSON.parse(localStorage.getItem('fvf_rcG')||'[]');oppBudgets=JSON.parse(localStorage.getItem('fvf_obG')||'{}');}
-  try{const{data,error}=await sb.from('prosjekt_data').select('*').eq('id','shared').single();if(!error&&data){todos=data.todos||[];timeline=(data.timeline&&data.timeline.length)?data.timeline:JSON.parse(JSON.stringify(defaultTimeline));people=data.people||[...defaultPeople];}else{timeline=JSON.parse(JSON.stringify(defaultTimeline));people=[...defaultPeople];}}catch(e){todos=JSON.parse(localStorage.getItem('fvf_todG')||'[]');timeline=JSON.parse(localStorage.getItem('fvf_tlG')||'null')||JSON.parse(JSON.stringify(defaultTimeline));people=JSON.parse(localStorage.getItem('fvf_pplG')||'null')||[...defaultPeople];}
+  try{const{data,error}=await sb.from('budsjett_data').select('*').eq('id','shared').single();if(error)throw error;if(data){tilbudStore=data.tilbud||{};runningCosts=data.running_costs||[];oppBudgets=data.opp_budgets||{};}syncOk=true;}catch(e){tilbudStore=JSON.parse(localStorage.getItem('fvf_tH')||'{}');runningCosts=JSON.parse(localStorage.getItem('fvf_rcH')||'[]');oppBudgets=JSON.parse(localStorage.getItem('fvf_obH')||'{}');}
+  try{const{data,error}=await sb.from('prosjekt_data').select('*').eq('id','shared').single();if(!error&&data){todos=data.todos||[];timeline=(data.timeline&&data.timeline.length)?data.timeline:JSON.parse(JSON.stringify(defaultTimeline));people=(data.people&&data.people.length)?data.people:[...defaultPeople];}else{timeline=JSON.parse(JSON.stringify(defaultTimeline));people=[...defaultPeople];}}catch(e){todos=JSON.parse(localStorage.getItem('fvf_todH')||'[]');timeline=JSON.parse(localStorage.getItem('fvf_tlH')||'null')||JSON.parse(JSON.stringify(defaultTimeline));people=JSON.parse(localStorage.getItem('fvf_pplH')||'null')||[...defaultPeople];}
   setSS(syncOk?'ok':'err',syncOk?'✅ Live':'⚠️ Offline');renderAll();
 }
+
+// SAVE — debounced but also immediate to localStorage
 let sBT=null,sPT=null;
-function saveBudget(){localStorage.setItem('fvf_tG',JSON.stringify(tilbudStore));localStorage.setItem('fvf_rcG',JSON.stringify(runningCosts));localStorage.setItem('fvf_obG',JSON.stringify(oppBudgets));if(sBT)clearTimeout(sBT);sBT=setTimeout(async()=>{try{await sb.from('budsjett_data').update({tilbud:tilbudStore,running_costs:runningCosts,opp_budgets:oppBudgets,updated_at:new Date().toISOString()}).eq('id','shared');}catch(e){}},800);}
-function saveProj(){localStorage.setItem('fvf_todG',JSON.stringify(todos));localStorage.setItem('fvf_tlG',JSON.stringify(timeline));localStorage.setItem('fvf_pplG',JSON.stringify(people));if(sPT)clearTimeout(sPT);sPT=setTimeout(async()=>{try{await sb.from('prosjekt_data').update({todos,timeline,people,updated_at:new Date().toISOString()}).eq('id','shared');}catch(e){}},800);}
-sb.channel('ch4').on('postgres_changes',{event:'UPDATE',schema:'public',table:'budsjett_data',filter:'id=eq.shared'},(p)=>{const d=p.new;if(d){tilbudStore=d.tilbud||{};runningCosts=d.running_costs||[];oppBudgets=d.opp_budgets||{};renderAll();}}).on('postgres_changes',{event:'UPDATE',schema:'public',table:'prosjekt_data',filter:'id=eq.shared'},(p)=>{const d=p.new;if(d){todos=d.todos||[];if(d.timeline&&d.timeline.length)timeline=d.timeline;if(d.people)people=d.people;renderAll();}}).subscribe();
+function saveBudget(){localStorage.setItem('fvf_tH',JSON.stringify(tilbudStore));localStorage.setItem('fvf_rcH',JSON.stringify(runningCosts));localStorage.setItem('fvf_obH',JSON.stringify(oppBudgets));if(sBT)clearTimeout(sBT);sBT=setTimeout(async()=>{try{await sb.from('budsjett_data').update({tilbud:tilbudStore,running_costs:runningCosts,opp_budgets:oppBudgets,updated_at:new Date().toISOString()}).eq('id','shared');}catch(e){}},600);}
+function saveProj(){localStorage.setItem('fvf_todH',JSON.stringify(todos));localStorage.setItem('fvf_tlH',JSON.stringify(timeline));localStorage.setItem('fvf_pplH',JSON.stringify(people));if(sPT)clearTimeout(sPT);sPT=setTimeout(async()=>{try{await sb.from('prosjekt_data').update({todos,timeline,people,updated_at:new Date().toISOString()}).eq('id','shared');}catch(e){}},600);}
+
+sb.channel('ch5').on('postgres_changes',{event:'UPDATE',schema:'public',table:'budsjett_data',filter:'id=eq.shared'},(p)=>{const d=p.new;if(d){tilbudStore=d.tilbud||{};runningCosts=d.running_costs||[];oppBudgets=d.opp_budgets||{};renderAll();}}).on('postgres_changes',{event:'UPDATE',schema:'public',table:'prosjekt_data',filter:'id=eq.shared'},(p)=>{const d=p.new;if(d){todos=d.todos||[];if(d.timeline&&d.timeline.length)timeline=d.timeline;if(d.people)people=d.people;renderAll();}}).subscribe();
 
 const MO=['Jan','Feb','Mar','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Des'],YRS=[2026,2027,2028,2029,2030],OPP_O=5000000;
 const D_OPP=[{id:'opp_arkitekt',name:'Arkitekt',db:400000},{id:'opp_entreprenor',name:'Entreprenør',db:500000},{id:'opp_tomrer',name:'Tømrer',db:800000},{id:'opp_elektro',name:'Elektriker',db:650000},{id:'opp_bad_vvs',name:'Bad/VVS',db:500000},{id:'opp_kjokken',name:'Kjøkken',db:350000},{id:'opp_maler',name:'Maler',db:250000},{id:'opp_innredning',name:'Innredning',db:600000},{id:'opp_tekn',name:'Teknisk',db:400000},{id:'opp_tilgang',name:'Tilgang',db:250000},{id:'opp_diverse',name:'Diverse',db:300000}];
@@ -177,17 +173,12 @@ function showPage(p){document.querySelectorAll('.page').forEach(e=>e.classList.r
 function startEdit(){editMode=true;editDraft={};D_OPP.forEach(d=>{editDraft[d.id]=gOB(d.id);});renderAll();}function cancelEdit(){editMode=false;editDraft={};renderAll();}
 function saveEdit(){Object.keys(editDraft).forEach(id=>{oppBudgets[id]=editDraft[id];});editMode=false;editDraft={};saveBudget();renderAll();}
 function gDT(){return D_OPP.reduce((s,d)=>s+(editDraft[d.id]!=null?editDraft[d.id]:gOB(d.id)),0);}function uDr(id,v){editDraft[id]=pN(v);}
-function renderAll(){renderInvest();renderDrift();renderGantt();renderPeople();renderTodos();}
 
-// PEOPLE
-function addPerson(){const inp=document.getElementById('newPersonInput');const name=inp.value.trim();if(!name)return;if(!people.includes(name)){people.push(name);saveProj();renderPeople();renderTodos();}inp.value='';}
+function renderAll(){renderInvest();renderDrift();renderGanttVisual();renderPeople();renderTodos();}
+
+function addPerson(){const inp=document.getElementById('newPersonInput');const name=inp.value.trim();if(!name)return;if(!people.includes(name)){people.push(name);saveProj();}inp.value='';renderPeople();renderTodos();}
 function removePerson(idx){people.splice(idx,1);saveProj();renderPeople();renderTodos();}
-function renderPeople(){
-  document.getElementById('peopleChips').innerHTML=people.map((p,i)=>`<span class="person-chip">👤 ${p}<span class="chip-del" onclick="removePerson(${i})">✕</span></span>`).join('');
-  // Update assignee selects
-  const sel=document.getElementById('todoAssignee');const cur=sel?sel.value:'';
-  if(sel){sel.innerHTML='<option value="">Hvem?</option>'+people.map(p=>`<option value="${p}">${p}</option>`).join('')+'<option value="Alle">Alle</option>';if(cur)sel.value=cur;}
-}
+function renderPeople(){document.getElementById('peopleChips').innerHTML=people.map((p,i)=>`<span class="person-chip">👤 ${p}<span class="chip-del" onclick="removePerson(${i})">✕</span></span>`).join('');const sel=document.getElementById('todoAssignee');const cur=sel?sel.value:'';if(sel){sel.innerHTML='<option value="">Hvem?</option>'+people.map(p=>`<option value="${p}">${p}</option>`).join('')+'<option value="Alle">Alle</option>';if(cur)sel.value=cur;}}
 
 // INVEST
 function renderInvest(){const oT=gOT(),iT=gIT();let iU=0;INV_F.forEach(i=>{iU+=gVS(2026,i.id);});gOI().forEach(i=>{iU+=gVS(2026,i.id);});const iR=iT-iU,iP=iT>0?iU/iT*100:0;
@@ -211,28 +202,132 @@ let tB=0,tU=0;dd.c.forEach(cat=>{cat.i.forEach(it=>{tB+=it.b;tU+=gRY(it.id,curre
 document.getElementById('budgetBody').innerHTML=ch;const sel=document.getElementById('postSelect');sel.innerHTML='<option value="">Post...</option>';dd.c.forEach(cat=>{sel.innerHTML+=`<optgroup label="${cat.n}">`;cat.i.forEach(i=>{sel.innerHTML+=`<option value="${i.id}">${i.n}</option>`;});sel.innerHTML+='</optgroup>';});}
 function rRnL(pid,yr){const en=runningCosts.filter(rc=>rc.id===pid&&rc.startYear<=yr);if(!en.length)return'';let h='<ul class="tilbud-list">';en.forEach(rc=>{const gi=runningCosts.indexOf(rc),mt=(yr===rc.startYear)?(12-rc.startMonth):12;h+=`<li class="tilbud-item"><span class="running-tag">Fra ${MO[rc.startMonth]} ${rc.startYear}</span><span class="pris" style="color:var(--fjord)">${fmt(rc.mndBelop)}/mnd</span><span style="font-weight:600">→${fmt(rc.mndBelop*mt)}</span><span style="flex:1;color:var(--text-muted)">${rc.notat||''}</span><button class="btn btn-small btn-danger" onclick="rRC(${gi})">✕</button></li>`;});return h+'</ul>';}
 
-// GANTT
+// ===== GANTT — FIXED DRAG SYSTEM =====
 const WEEKS=[];for(let w=10;w<=31;w++)WEEKS.push(w);const W_C=WEEKS.length;const M_S={10:'Mar',14:'Apr',18:'Mai',22:'Jun',27:'Jul',31:'Aug'};
-function delItem(id){timeline=timeline.filter(t=>t.id!==id);saveProj();renderGantt();}
-function delRow(row){if(!confirm('Slette "'+row+'"?'))return;timeline=timeline.filter(t=>t.row!==row);saveProj();renderGantt();}
-function renderGantt(){const rows=[...new Set(timeline.map(t=>t.row))];const mK=Object.keys(M_S).map(Number);const mSp=[];for(let i=0;i<mK.length;i++){mSp.push({n:M_S[mK[i]],sp:(i<mK.length-1?mK[i+1]:32)-mK[i]});}
-let h='<div class="gantt-month-row"><div class="gantt-label-col"></div>';mSp.forEach(m=>{h+=`<div class="gantt-month-cell" style="flex:${m.sp}">${m.n}</div>`;});h+='</div>';
-h+='<div class="gantt-header"><div class="gantt-label-col">Aktivitet</div><div class="gantt-weeks">';WEEKS.forEach(w=>{h+=`<div class="gantt-week">U${w}</div>`;});h+='</div></div>';
-rows.forEach(row=>{const items=timeline.filter(t=>t.row===row);h+=`<div class="gantt-row"><div class="gantt-row-label">${row}<button class="del-row-btn" onclick="delRow('${row.replace(/'/g,"\\'")}')">✕</button></div><div class="gantt-row-cells" data-rowname="${row}">`;WEEKS.forEach(()=>{h+='<div class="gantt-cell"></div>';});
-items.forEach(it=>{if(it.type==='bar'){const l=((it.s-10)/W_C)*100,w=((it.e-it.s)/W_C)*100;h+=`<div class="gantt-bar ${it.cls}" style="left:${l}%;width:${w}%;" data-id="${it.id}" title="${it.text}"><div class="drag-handle-l" data-id="${it.id}" data-handle="l"></div>${it.text}<div class="drag-handle-r" data-id="${it.id}" data-handle="r"></div><div class="gantt-del" onclick="event.stopPropagation();delItem('${it.id}')">✕</div></div>`;}else{const l=((it.w-10+.2)/W_C)*100;h+=`<div class="gantt-dm-wrap" style="left:calc(${l}% - 8px);" data-id="${it.id}"><div class="gantt-diamond ${it.cls}" data-id="${it.id}" title="${it.text}"></div><div class="gantt-dm-label">${it.text}</div><div class="gantt-del" onclick="event.stopPropagation();delItem('${it.id}')">✕</div></div>`;}});
-h+='</div></div>';});document.getElementById('ganttChart').innerHTML=h;setupDrag();setupDblClick();}
 
-function setupDrag(){let dr=null,dT=null,sX=0,oS=0,oE=0,oW=0,cW=0;
-document.querySelectorAll('.gantt-bar').forEach(bar=>{bar.addEventListener('mousedown',e=>{if(e.target.classList.contains('gantt-del')||e.target.dataset.handle)return;e.preventDefault();const it=timeline.find(t=>t.id===bar.dataset.id);if(!it)return;cW=bar.parentElement.offsetWidth/W_C;dr=it;dT='m';sX=e.clientX;oS=it.s;oE=it.e;});bar.querySelectorAll('.drag-handle-l,.drag-handle-r').forEach(handle=>{handle.addEventListener('mousedown',e=>{e.preventDefault();e.stopPropagation();const it=timeline.find(t=>t.id===handle.dataset.id);if(!it)return;cW=bar.parentElement.offsetWidth/W_C;dr=it;dT=handle.dataset.handle==='l'?'rl':'rr';sX=e.clientX;oS=it.s;oE=it.e;});});});
-document.querySelectorAll('.gantt-diamond[data-id]').forEach(dm=>{dm.addEventListener('mousedown',e=>{if(e.target.classList.contains('gantt-del'))return;e.preventDefault();const it=timeline.find(t=>t.id===dm.dataset.id);if(!it)return;const rc=dm.closest('.gantt-row-cells');cW=rc.offsetWidth/W_C;dr=it;dT='d';sX=e.clientX;oW=it.w;});});
-document.querySelectorAll('.gantt-dm-wrap[data-id]').forEach(wrap=>{wrap.addEventListener('mousedown',e=>{if(e.target.classList.contains('gantt-del')||e.target.classList.contains('gantt-diamond'))return;e.preventDefault();const it=timeline.find(t=>t.id===wrap.dataset.id);if(!it)return;const rc=wrap.closest('.gantt-row-cells');cW=rc.offsetWidth/W_C;dr=it;dT='d';sX=e.clientX;oW=it.w;});});
-const snap=v=>Math.round(v*2)/2;
-document.addEventListener('mousemove',e=>{if(!dr)return;const dx=e.clientX-sX,dW=dx/cW;if(dT==='m'){const dur=oE-oS;let ns=snap(oS+dW);ns=Math.max(10,Math.min(31-dur,ns));dr.s=ns;dr.e=ns+dur;}else if(dT==='rl'){dr.s=Math.max(10,Math.min(dr.e-.5,snap(oS+dW)));}else if(dT==='rr'){dr.e=Math.max(dr.s+.5,Math.min(31,snap(oE+dW)));}else if(dT==='d'){dr.w=Math.max(10,Math.min(31,snap(oW+dW)));}renderGantt();});
-document.addEventListener('mouseup',()=>{if(dr){dr=null;saveProj();}});}
-function setupDblClick(){document.querySelectorAll('.gantt-row-cells').forEach(rc=>{rc.addEventListener('dblclick',e=>{if(e.target.closest('.gantt-bar')||e.target.closest('.gantt-dm-wrap'))return;const rect=rc.getBoundingClientRect();showAddModal(rc.dataset.rowname,Math.round(((e.clientX-rect.left)/rect.width*W_C+10)*2)/2);});});}
+// Global drag state — persists across renders
+let ganttDrag={active:false,itemId:null,type:null,startX:0,origS:0,origE:0,origW:0,cellWidth:0};
+
+function delItem(id){timeline=timeline.filter(t=>t.id!==id);saveProj();renderGanttVisual();}
+function delRow(row){if(!confirm('Slette "'+row+'"?'))return;timeline=timeline.filter(t=>t.row!==row);saveProj();renderGanttVisual();}
+
+// Only render visuals — no new event listeners on bars/diamonds
+function renderGanttVisual(){
+  const rows=[...new Set(timeline.map(t=>t.row))];
+  const mK=Object.keys(M_S).map(Number);const mSp=[];for(let i=0;i<mK.length;i++){mSp.push({n:M_S[mK[i]],sp:(i<mK.length-1?mK[i+1]:32)-mK[i]});}
+  let h='<div class="gantt-month-row"><div class="gantt-label-col"></div>';mSp.forEach(m=>{h+=`<div class="gantt-month-cell" style="flex:${m.sp}">${m.n}</div>`;});h+='</div>';
+  h+='<div class="gantt-header"><div class="gantt-label-col">Aktivitet</div><div class="gantt-weeks">';WEEKS.forEach(w=>{h+=`<div class="gantt-week">U${w}</div>`;});h+='</div></div>';
+  rows.forEach(row=>{
+    const items=timeline.filter(t=>t.row===row);
+    const esc=row.replace(/'/g,"\\'");
+    h+=`<div class="gantt-row"><div class="gantt-row-label">${row}<button class="del-row-btn" onclick="delRow('${esc}')">✕</button></div><div class="gantt-row-cells" data-rowname="${row}">`;
+    WEEKS.forEach(()=>{h+='<div class="gantt-cell"></div>';});
+    items.forEach(it=>{
+      const isDragging=ganttDrag.active&&ganttDrag.itemId===it.id;
+      if(it.type==='bar'){
+        const l=((it.s-10)/W_C)*100,w=((it.e-it.s)/W_C)*100;
+        h+=`<div class="gantt-bar ${it.cls}${isDragging?' dragging':''}" style="left:${l}%;width:${w}%;" data-gid="${it.id}" title="${it.text}"><div class="drag-handle-l" data-gid="${it.id}" data-gh="l"></div><span style="pointer-events:none">${it.text}</span><div class="drag-handle-r" data-gid="${it.id}" data-gh="r"></div><div class="gantt-del" data-del="${it.id}">✕</div></div>`;
+      } else {
+        const l=((it.w-10+.2)/W_C)*100;
+        h+=`<div class="gantt-dm-wrap${isDragging?' dragging':''}" style="left:calc(${l}% - 8px);" data-gid="${it.id}"><div class="gantt-diamond ${it.cls}" data-gid="${it.id}" title="${it.text}"></div><div class="gantt-dm-label">${it.text}</div><div class="gantt-del" data-del="${it.id}">✕</div></div>`;
+      }
+    });
+    h+='</div></div>';
+  });
+  document.getElementById('ganttChart').innerHTML=h;
+}
+
+// GLOBAL event listeners — set up ONCE
+document.addEventListener('mousedown',function(e){
+  // Delete button
+  const delBtn=e.target.closest('[data-del]');
+  if(delBtn){e.preventDefault();e.stopPropagation();delItem(delBtn.dataset.del);return;}
+
+  // Handle resize
+  const handle=e.target.closest('[data-gh]');
+  if(handle){
+    e.preventDefault();e.stopPropagation();
+    const id=handle.dataset.gid;const it=timeline.find(t=>t.id===id);if(!it)return;
+    const rc=handle.closest('.gantt-row-cells');
+    ganttDrag={active:true,itemId:id,type:handle.dataset.gh==='l'?'rl':'rr',startX:e.clientX,origS:it.s,origE:it.e,origW:0,cellWidth:rc.offsetWidth/W_C};
+    return;
+  }
+
+  // Bar drag
+  const bar=e.target.closest('[data-gid].gantt-bar');
+  if(bar&&!e.target.closest('[data-gh]')&&!e.target.closest('[data-del]')){
+    e.preventDefault();
+    const id=bar.dataset.gid;const it=timeline.find(t=>t.id===id);if(!it)return;
+    const rc=bar.closest('.gantt-row-cells');
+    ganttDrag={active:true,itemId:id,type:'move',startX:e.clientX,origS:it.s,origE:it.e,origW:0,cellWidth:rc.offsetWidth/W_C};
+    return;
+  }
+
+  // Diamond drag
+  const dm=e.target.closest('.gantt-diamond[data-gid]');
+  if(dm&&!e.target.closest('[data-del]')){
+    e.preventDefault();
+    const id=dm.dataset.gid;const it=timeline.find(t=>t.id===id);if(!it)return;
+    const rc=dm.closest('.gantt-row-cells');
+    ganttDrag={active:true,itemId:id,type:'dm',startX:e.clientX,origS:0,origE:0,origW:it.w,cellWidth:rc.offsetWidth/W_C};
+    return;
+  }
+
+  // Wrap drag (clicking label area of diamond)
+  const wrap=e.target.closest('.gantt-dm-wrap[data-gid]');
+  if(wrap&&!e.target.closest('[data-del]')&&!e.target.closest('.gantt-diamond')){
+    e.preventDefault();
+    const id=wrap.dataset.gid;const it=timeline.find(t=>t.id===id);if(!it)return;
+    const rc=wrap.closest('.gantt-row-cells');
+    ganttDrag={active:true,itemId:id,type:'dm',startX:e.clientX,origS:0,origE:0,origW:it.w,cellWidth:rc.offsetWidth/W_C};
+    return;
+  }
+});
+
+document.addEventListener('mousemove',function(e){
+  if(!ganttDrag.active)return;
+  const it=timeline.find(t=>t.id===ganttDrag.itemId);
+  if(!it){ganttDrag.active=false;return;}
+  const dx=e.clientX-ganttDrag.startX;
+  const dW=dx/ganttDrag.cellWidth;
+  const snap=v=>Math.round(v*2)/2;
+
+  if(ganttDrag.type==='move'){
+    const dur=ganttDrag.origE-ganttDrag.origS;
+    let ns=snap(ganttDrag.origS+dW);
+    ns=Math.max(10,Math.min(31-dur,ns));
+    it.s=ns;it.e=ns+dur;
+  } else if(ganttDrag.type==='rl'){
+    it.s=Math.max(10,Math.min(it.e-.5,snap(ganttDrag.origS+dW)));
+  } else if(ganttDrag.type==='rr'){
+    it.e=Math.max(it.s+.5,Math.min(31,snap(ganttDrag.origE+dW)));
+  } else if(ganttDrag.type==='dm'){
+    it.w=Math.max(10,Math.min(31,snap(ganttDrag.origW+dW)));
+  }
+  renderGanttVisual();
+});
+
+document.addEventListener('mouseup',function(){
+  if(ganttDrag.active){
+    ganttDrag.active=false;
+    saveProj(); // Save after every drag completes
+    renderGanttVisual();
+  }
+});
+
+// Double-click to add — delegated
+document.addEventListener('dblclick',function(e){
+  const rc=e.target.closest('.gantt-row-cells');
+  if(!rc)return;
+  if(e.target.closest('.gantt-bar')||e.target.closest('.gantt-dm-wrap'))return;
+  const rect=rc.getBoundingClientRect();
+  const week=Math.round(((e.clientX-rect.left)/rect.width*W_C+10)*2)/2;
+  showAddModal(rc.dataset.rowname,week);
+});
+
 function showAddModal(row,week){const allRows=[...new Set(timeline.map(t=>t.row))];document.getElementById('modalRoot').innerHTML=`<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal"><h3>Legg til i tidslinjen</h3><label>Type</label><select id="mType" onchange="toggleMF()"><option value="diamond">◆ Milepæl</option><option value="bar">▬ Prosess</option></select><label>Tekst</label><input type="text" id="mText" placeholder="F.eks. Byggestart"/><label>Rad</label><select id="mRow" onchange="document.getElementById('mNRW').className=this.value==='__new'?'':'hidden'">${allRows.map(r=>`<option value="${r}"${r===row?' selected':''}>${r}</option>`).join('')}<option value="__new">+ Ny rad...</option></select><div id="mNRW" class="hidden"><label>Radnavn</label><input type="text" id="mNR"/></div><label>Farge</label><select id="mCls"></select><div id="mWW"><label>Uke</label><input type="number" id="mW" value="${week}" min="10" max="31" step="0.5"/></div><div id="mBW" class="hidden"><label>Start</label><input type="number" id="mS" value="${week}" min="10" max="31" step="0.5"/><label>Slutt</label><input type="number" id="mE" value="${Math.min(week+3,31)}" min="10" max="31" step="0.5"/></div><div class="modal-btns"><button class="btn btn-ghost" onclick="closeModal()">Avbryt</button><button class="btn btn-primary" onclick="confirmAdd()">Legg til</button></div></div></div>`;toggleMF();}
 function toggleMF(){const t=document.getElementById('mType').value;document.getElementById('mWW').className=t==='diamond'?'':'hidden';document.getElementById('mBW').className=t==='bar'?'':'hidden';document.getElementById('mCls').innerHTML=t==='diamond'?'<option value="diamond-dark">⬥ Mørk</option><option value="diamond-red">⬥ Rød</option><option value="diamond-accent">⬥ Grønn</option>':'<option value="bar-red">▬ Rød</option><option value="bar-warm">▬ Oransje</option><option value="bar-green">▬ Grønn</option><option value="bar-fjord">▬ Blå</option><option value="bar-gray">▬ Grå</option>';}
-function confirmAdd(){const type=document.getElementById('mType').value,text=document.getElementById('mText').value.trim();let row=document.getElementById('mRow').value;if(row==='__new'){row=document.getElementById('mNR').value.trim();if(!row)return alert('Radnavn!');}const cls=document.getElementById('mCls').value,id='t'+Date.now();if(type==='diamond')timeline.push({id,row,type:'diamond',w:parseFloat(document.getElementById('mW').value)||15,text,cls});else{const s=parseFloat(document.getElementById('mS').value)||15,e=parseFloat(document.getElementById('mE').value)||18;timeline.push({id,row,type:'bar',s:Math.min(s,e),e:Math.max(s,e),text,cls});}closeModal();saveProj();renderGantt();}
+function confirmAdd(){const type=document.getElementById('mType').value,text=document.getElementById('mText').value.trim();let row=document.getElementById('mRow').value;if(row==='__new'){row=document.getElementById('mNR').value.trim();if(!row)return alert('Radnavn!');}const cls=document.getElementById('mCls').value,id='t'+Date.now();if(type==='diamond')timeline.push({id,row,type:'diamond',w:parseFloat(document.getElementById('mW').value)||15,text,cls});else{const s=parseFloat(document.getElementById('mS').value)||15,e=parseFloat(document.getElementById('mE').value)||18;timeline.push({id,row,type:'bar',s:Math.min(s,e),e:Math.max(s,e),text,cls});}closeModal();saveProj();renderGanttVisual();}
 function closeModal(){document.getElementById('modalRoot').innerHTML='';}
 
 // TODOS
@@ -250,6 +345,7 @@ function rTi(key,idx){tilbudStore[key]?.splice(idx,1);saveBudget();renderInvest(
 function rRC(idx){runningCosts.splice(idx,1);saveBudget();renderDrift();}
 function addTilbud(){const p=document.getElementById('investSelect').value,l=document.getElementById('iLev').value.trim(),pr=pN(document.getElementById('iPris').value),n=document.getElementById('iNot').value.trim();if(!p||!l||!pr)return alert('Fyll inn felt.');const k=gK(2026,p);if(!tilbudStore[k])tilbudStore[k]=[];tilbudStore[k].push({leverandor:l,pris:pr,notat:n,valgt:false});saveBudget();document.getElementById('iLev').value='';document.getElementById('iPris').value='';document.getElementById('iNot').value='';renderInvest();}
 function addFaktisk(){const p=document.getElementById('postSelect').value,m=parseInt(document.getElementById('monthSelect').value),b=pN(document.getElementById('faktiskInput').value),n=document.getElementById('faktiskNot').value.trim();if(!p||!b)return alert('Post og beløp.');runningCosts.push({id:p,startYear:currentYear,startMonth:m,mndBelop:b,notat:n});saveBudget();document.getElementById('faktiskInput').value='';document.getElementById('faktiskNot').value='';renderDrift();}
+
 loadData();
 </script>
 </body>
